@@ -1,9 +1,63 @@
-import { FC, useMemo } from 'react';
+import React, { FC, useMemo } from 'react';
 import { TConstructorIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
 
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  addBun,
+  addIngredient,
+  removeIngredient,
+  clearConstructor
+} from '../../services/constructorSlice';
+import { RootState } from '../../services/store';
+import { makeSelectConstructor } from '../../services/constructorSelectors'; // Проверьте путь к селектору
+
 export const BurgerConstructor: FC = () => {
-  /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
+  const dispatch = useDispatch();
+
+  const constructorItems = useSelector(makeSelectConstructor) as {
+    bun: TConstructorIngredient | null;
+    ingredients: TConstructorIngredient[];
+  };
+
+  const orderRequest = false;
+
+  const orderModalData = null;
+
+  const onOrderClick = () => {
+    if (!constructorItems.bun || orderRequest) return;
+    // Логика обработки заказа
+  };
+
+  const closeOrderModal = () => {
+    // Логика закрытия модального окна заказа
+  };
+
+  const price = useMemo(
+    () =>
+      (constructorItems.bun ? constructorItems.bun.price * 2 : 0) +
+      constructorItems.ingredients.reduce(
+        (s: number, v: TConstructorIngredient) => s + v.price,
+        0
+      ),
+    [constructorItems]
+  );
+
+  return (
+    <BurgerConstructorUI
+      price={price}
+      orderRequest={orderRequest}
+      constructorItems={constructorItems}
+      orderModalData={orderModalData}
+      onOrderClick={onOrderClick}
+      closeOrderModal={closeOrderModal}
+    />
+  );
+};
+
+/**
+export const BurgerConstructor: FC = () => {
+  /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора 
   const constructorItems = {
     bun: {
       price: 0
@@ -30,7 +84,7 @@ export const BurgerConstructor: FC = () => {
     [constructorItems]
   );
 
-  // return null;
+  return null;
 
   return (
     <BurgerConstructorUI
@@ -42,4 +96,4 @@ export const BurgerConstructor: FC = () => {
       closeOrderModal={closeOrderModal}
     />
   );
-};
+}; */
