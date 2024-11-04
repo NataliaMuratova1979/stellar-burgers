@@ -9,6 +9,8 @@ import { fetchIngredients } from '../../services/ingredientsSlice';
 
 import { RootState, AppDispatch } from '../../services/store';
 
+/**Этот компонент отвечает за отображение списка ингредиентов для бургера, а также за управление состоянием вкладок (табов) для различных типов ингредиентов. */
+
 export const BurgerIngredients: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { ingredients, loading, error } = useSelector(

@@ -3,8 +3,11 @@ import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
 
+import { useSelector } from 'react-redux';
+import { RootState, AppDispatch } from '../../services/store';
+
 export const OrderInfo: FC = () => {
-  /** TODO: взять переменные orderData и ingredients из стора */
+  /** TODO: взять переменные orderData и ingredients(done) из стора */
   const orderData = {
     createdAt: '',
     ingredients: [],
@@ -15,7 +18,10 @@ export const OrderInfo: FC = () => {
     number: 0
   };
 
-  const ingredients: TIngredient[] = [];
+  // Получаем ингредиенты из Redux Store
+  const ingredients = useSelector(
+    (state: RootState) => state.ingredients.ingredients
+  );
 
   /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {

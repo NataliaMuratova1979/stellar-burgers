@@ -54,6 +54,7 @@ const App: React.FC = () => {
         <Route path='/profile' element={<Profile />} />
         <Route path='/profile/orders' element={<ProfileOrders />} />
         <Route path='/*' element={<NotFound404 />} />
+        <Route path='/ingredients/:id' element={<IngredientDetails />} />
       </Routes>
 
       {backgroundLocation && (
