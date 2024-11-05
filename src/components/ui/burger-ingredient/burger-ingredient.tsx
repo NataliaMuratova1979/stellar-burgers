@@ -1,9 +1,6 @@
 import React, { FC, memo } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './burger-ingredient.module.css';
-import { useLocation } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { addIngredient } from '../../../services/constructorSlice';
 
 import {
   Counter,
