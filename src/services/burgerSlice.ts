@@ -62,6 +62,42 @@ const burgerSlice = createSlice({
       state.constructorItems.bun = null; // Очищаем булку
       state.constructorItems.ingredients = []; // Очищаем ингредиенты
       console.log('Конструктор очищен');
+    },
+    moveIngredientUp(state, action: PayloadAction<string>) {
+      const ingredientId = action.payload;
+      const index = state.constructorItems.ingredients.findIndex(
+        (ingredient) => ingredient.id === ingredientId
+      );
+      if (index > 0) {
+        const [movedIngredient] = state.constructorItems.ingredients.splice(
+          index,
+          1
+        ); // Удаляем ингредиент из его текущей позиции
+        state.constructorItems.ingredients.splice(
+          index - 1,
+          0,
+          movedIngredient
+        ); // Вставляем его на одну позицию вверх
+        console.log('Ингредиент перемещен вверх:', movedIngredient);
+      }
+    },
+    moveIngredientDown(state, action: PayloadAction<string>) {
+      const ingredientId = action.payload;
+      const index = state.constructorItems.ingredients.findIndex(
+        (ingredient) => ingredient.id === ingredientId
+      );
+      if (index < state.constructorItems.ingredients.length - 1) {
+        const [movedIngredient] = state.constructorItems.ingredients.splice(
+          index,
+          1
+        ); // Удаляем ингредиент из его текущей позиции
+        state.constructorItems.ingredients.splice(
+          index + 1,
+          0,
+          movedIngredient
+        ); // Вставляем его на одну позицию вниз
+        console.log('Ингредиент перемещен вниз:', movedIngredient);
+      }
     }
   }
 });
@@ -73,7 +109,9 @@ export const {
   removeIngredient,
   setOrderRequest,
   setOrderModalData,
-  clearConstructor
+  clearConstructor,
+  moveIngredientUp,
+  moveIngredientDown
 } = burgerSlice.actions;
 
 // Экспортируем редюсер

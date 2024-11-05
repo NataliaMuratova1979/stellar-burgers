@@ -7,6 +7,8 @@ import { addIngredient, setBun } from '../../services/burgerSlice'; //импор
 import { BurgerIngredientUI } from '@ui';
 import { TBurgerIngredientProps } from './type';
 import { TConstructorIngredient } from '@utils-types';
+import { v4 as uuidv4 } from 'uuid'; // библиотека для генерации уникального uuid
+
 /**Этот компонент отвечает за отображение отдельного ингредиента бургера с учетом его количества и информации о текущем маршруте. Он использует оптимизацию через memo, чтобы избежать лишних рендеров.*/
 
 export const BurgerIngredient: FC<TBurgerIngredientProps> = memo(
@@ -16,12 +18,21 @@ export const BurgerIngredient: FC<TBurgerIngredientProps> = memo(
 
     // Функция для добавления ингредиента в конструктор бургера
     const handleAdd = () => {
+      const ingredientWithId = {
+        ...ingredient,
+        id: uuidv4() // Генерация уникального id для ингредиента
+      };
+
+      // Логируем созданный id в консоль
+      console.log('Добавляем ингредиент и задаем ему ID:', ingredientWithId);
+      console.log('Созданный ID инвгредиента:', ingredientWithId.id);
+
       if (ingredient.type === 'bun') {
         // Если ингредиент - булка, устанавливаем ее
-        dispatch(setBun(ingredient as TConstructorIngredient));
+        dispatch(setBun(ingredientWithId as TConstructorIngredient));
       } else {
         // Если ингредиент - не булка, добавляем его в массив ингредиентов
-        dispatch(addIngredient(ingredient as TConstructorIngredient));
+        dispatch(addIngredient(ingredientWithId as TConstructorIngredient));
       }
     };
     return (
