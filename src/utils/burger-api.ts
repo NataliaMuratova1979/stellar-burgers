@@ -36,7 +36,7 @@ export const refreshToken = (): Promise<TRefreshResponse> =>
       return refreshData;
     });
 
-//Код, который вы предоставили, представляет собой функцию fetchWithRefresh, которая выполняет HTTP-запрос с обработкой возможного истечения токена доступа (JWT).
+//Код  представляет собой функцию fetchWithRefresh, которая выполняет HTTP-запрос с обработкой возможного истечения токена доступа (JWT).
 export const fetchWithRefresh = async <T>(
   url: RequestInfo,
   options: RequestInit
@@ -80,7 +80,7 @@ export const getIngredientsApi = () =>
       if (data?.success) return data.data;
       return Promise.reject(data);
     });
-// Функция getFeedsApi предназначена для получения списка заказов из API.
+// Эта функция выполняет HTTP-запрос для получения всех заказов (feeds).
 export const getFeedsApi = () =>
   fetch(`${URL}/orders/all`)
     .then((res) => checkResponse<TFeedsResponse>(res))

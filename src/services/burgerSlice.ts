@@ -1,5 +1,6 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit';
 import { TConstructorIngredient, TOrder } from '@utils-types'; // Импортируем ваши типы
+import { RootState } from './store'; // Импортируйте тип корневого состояния вашего Redux Store
 
 // Определяем интерфейсы для состояния - в конструкторе должна быть булка и ингредиенты
 interface ConstructorItems {
@@ -116,3 +117,25 @@ export const {
 
 // Экспортируем редюсер
 export default burgerSlice.reducer;
+
+// Селектор для получения булки
+export const selectBun = (state: RootState) =>
+  state.burger.constructorItems.bun;
+
+// Селектор для получения списка ингредиентов
+export const selectIngredients = (state: RootState) =>
+  state.burger.constructorItems.ingredients;
+
+// Селектор для получения статуса запроса на заказ
+export const selectOrderRequest = (state: RootState) =>
+  state.burger.orderRequest;
+
+// Селектор для получения данных о заказе
+export const selectOrderModalData = (state: RootState) =>
+  state.burger.orderModalData;
+
+// Селектор для получения общего количества ингредиентов
+export const selectTotalIngredientsCount = createSelector(
+  [selectIngredients],
+  (ingredients) => ingredients.length
+);

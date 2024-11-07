@@ -20,17 +20,24 @@ import {
 } from '@pages';
 
 /* импортируем модалки */
-import { Modal } from '../modal';
-import { OrderInfo } from '../order-info';
-import { IngredientDetails } from '../ingredient-details';
+//import { Modal } from '../modal';
+//import { OrderInfo } from '../order-info';
+//import { IngredientDetails } from '../ingredient-details';
 
-import { AppHeader } from '@components';
+import {
+  AppHeader,
+  IngredientDetails,
+  Modal,
+  FeedInfo,
+  OrderInfo
+} from '@components';
 import '../../index.css';
 import styles from './app.module.css';
 
 const App: React.FC = () => {
   const location = useLocation();
   const backgroundLocation = location.state?.backgroundLocation;
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOpenModal = () => {
@@ -46,7 +53,7 @@ const App: React.FC = () => {
       <AppHeader />
       <Routes location={backgroundLocation || location}>
         <Route path='/' element={<ConstructorPage />} />
-        <Route path='/feed' element={<Feed />} />
+        <Route path='/feed' element={<FeedInfo />} />
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
         <Route path='/forgot-password' element={<ForgotPassword />} />
