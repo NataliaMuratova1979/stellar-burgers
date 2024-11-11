@@ -1,12 +1,19 @@
 import React, { FC, memo } from 'react';
 
+// Импортируем стили для компонента
 import styles from './feed-info.module.css';
 
+// Импортируем типы для пропсов
 import { FeedInfoUIProps, HalfColumnProps, TColumnProps } from './type';
 
+// Компонент FeedInfoUI
 export const FeedInfoUI: FC<FeedInfoUIProps> = memo(
   ({ feed, readyOrders, pendingOrders }) => {
+    // Извлекаем данные о заказах из пропсов
     const { total, totalToday } = feed;
+
+    // Логируем информацию о заказах для отладки
+    console.log('Общая информация о заказах:', feed);
 
     return (
       <section>

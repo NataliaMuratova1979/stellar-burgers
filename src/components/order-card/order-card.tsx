@@ -14,7 +14,7 @@ export const OrderCard: FC<OrderCardProps> = memo(({ order }) => {
 
   /** TODO: взять переменную из стора */
   const ingredients: TIngredient[] = useSelector(
-    (state: RootState) => state.burger.constructorItems.ingredients
+    (state: RootState) => state.ingredients.ingredients
   );
 
   const orderInfo = useMemo(() => {

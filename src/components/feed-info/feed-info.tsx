@@ -5,9 +5,13 @@ import { RootState, AppDispatch } from '../../services/store'; // Путь к в
 
 import { TOrder } from '@utils-types';
 import { FeedInfoUI } from '../ui/feed-info';
+import {
+  selectOrders,
+  selectTotalOrders,
+  selectTotalToday
+} from '../../services/ordersSlice'; // Импортируем селекторы
 
-/** Этот компонент предназначен для отображения информации о заказах */
-
+// Функция для фильтрации заказов по статусу
 const getOrders = (orders: TOrder[], status: string): number[] =>
   orders
     .filter((item) => item.status === status)
@@ -16,24 +20,16 @@ const getOrders = (orders: TOrder[], status: string): number[] =>
 
 export const FeedInfo: FC = () => {
   const dispatch: AppDispatch = useDispatch(); // Указываем тип для dispatch
-  const { orders, total, totalToday } = useSelector(
-    (state: RootState) => state.orders
-  );
+  const orders = useSelector(selectOrders); // Используем селектор для получения заказов
+  const total = useSelector(selectTotalOrders); // Используем селектор для получения общего числа заказов
+  const totalToday = useSelector(selectTotalToday); // Используем селектор для получения общего числа заказов сегодня
 
-  useEffect(() => {
-    console.log('Dispatching fetchOrders...');
-    dispatch(fetchOrders() as any); // Приведение типа может помочь, если вы хотите временно обойти ошибку
-  }, [dispatch]);
+  console.log('FeedIndo, Текущие заказы:', orders);
+  console.log('Всего заказов:', total);
+  console.log('Всего заказов сегодня:', totalToday);
 
-  console.log('Current orders:', orders);
-  console.log('Total orders:', total);
-  console.log('Total today:', totalToday);
-
-  const readyOrders = getOrders(orders, 'done');
-  const pendingOrders = getOrders(orders, 'pending');
-
-  console.log('Ready orders:', readyOrders);
-  console.log('Pending orders:', pendingOrders);
+  const readyOrders = getOrders(orders, 'done'); // Получаем готовые заказы
+  const pendingOrders = getOrders(orders, 'pending'); // Получаем ожидающие заказы
 
   return (
     <FeedInfoUI

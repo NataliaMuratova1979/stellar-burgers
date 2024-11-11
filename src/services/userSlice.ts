@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TUser } from '@utils-types';
+import { RootState } from './store';
 
 // Определяем тип начального состояния для пользователя
 type TInitialState = {
@@ -42,7 +43,8 @@ const userSlice = createSlice({
 
 // Экспортируем редюсеры и селекторы
 export const { init, setUser, logout } = userSlice.actions;
-export const selectUser = (state) => state.user.user;
-export const selectIsAuthenticated = (state) => state.user.isAuthenticated;
+export const selectUser = (state: RootState) => state.user.user;
+export const selectIsAuthenticated = (state: RootState) =>
+  state.user.isAuthenticated;
 
 export default userSlice.reducer;

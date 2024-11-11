@@ -100,7 +100,7 @@ export const getOrdersApi = () =>
     if (data?.success) return data.orders;
     return Promise.reject(data);
   });
-
+//тип TNewOrderResponse представляет собой ответ от сервера, связанный с созданием нового заказа
 type TNewOrderResponse = TServerResponse<{
   order: TOrder;
   name: string;

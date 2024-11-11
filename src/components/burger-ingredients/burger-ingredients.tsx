@@ -13,9 +13,7 @@ import { RootState, AppDispatch } from '../../services/store';
 
 export const BurgerIngredients: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { ingredients, loading, error } = useSelector(
-    (state: RootState) => state.ingredients
-  );
+  const { ingredients } = useSelector((state: RootState) => state.ingredients);
 
   /** TODO: взять переменные из стора 
   const buns = [];
@@ -40,10 +38,6 @@ export const BurgerIngredients: FC = () => {
   });
 
   useEffect(() => {
-    dispatch(fetchIngredients());
-  }, [dispatch]);
-
-  useEffect(() => {
     if (inViewBuns) {
       setCurrentTab('bun');
     } else if (inViewSauces) {
@@ -62,9 +56,6 @@ export const BurgerIngredients: FC = () => {
     if (tab === 'sauce')
       titleSaucesRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
-
-  if (loading) return <p>Загрузка...</p>;
-  if (error) return <p>Ошибка: {error}</p>;
 
   const buns = ingredients.filter((ingredient) => ingredient.type === 'bun');
   const mains = ingredients.filter((ingredient) => ingredient.type === 'main');
