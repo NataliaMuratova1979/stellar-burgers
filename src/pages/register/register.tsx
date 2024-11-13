@@ -23,28 +23,15 @@ export const Register: FC = () => {
 
   // Обработчик отправки формы
   const handleSubmit = async (e: SyntheticEvent) => {
-    e.preventDefault(); // Предотвращаем перезагрузку страницы
-
-    console.log('Отправка формы с данными:', { userName, email, password });
+    e.preventDefault();
 
     try {
-      // Диспетчеризация действия регистрации пользователя
       await dispatch(
         registerUser({ name: userName, email, password })
-      ).unwrap(); // unwrap() для получения результата или ошибки
+      ).unwrap();
 
-      console.log('Регистрация успешна, перенаправляем на профиль');
-      navigate('/profile', { replace: true }); // Перенаправление на страницу профиля
-    } catch (error: unknown) {
-      // Обработка ошибок
-      if (error instanceof Error) {
-        console.error('Ошибка регистрации:', error.message);
-        setErrorMessage(error.message); // Установка сообщения об ошибке
-      } else {
-        console.error('Неизвестная ошибка при регистрации');
-        setErrorMessage('Произошла ошибка при регистрации.');
-      }
-    }
+      navigate('/profile', { replace: true });
+    } catch (_) {}
   };
 
   return (
