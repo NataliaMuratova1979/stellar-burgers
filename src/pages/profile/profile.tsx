@@ -15,6 +15,7 @@ export const Profile: FC = () => {
   });
 
   useEffect(() => {
+    console.log('User data updated:', user); // Логируем обновленные данные пользователя
     setFormValue((prevState) => ({
       ...prevState,
       name: user?.name || '',
@@ -27,13 +28,17 @@ export const Profile: FC = () => {
     formValue.email !== user?.email ||
     !!formValue.password;
 
+  console.log('Is form changed:', isFormChanged); // Логируем состояние формы
+
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
+    console.log('Form submitted with values:', formValue); // Логируем значения формы при отправке
     dispatch(updateUser(formValue));
   };
 
   const handleCancel = (e: SyntheticEvent) => {
     e.preventDefault();
+    console.log('Form reset to initial values'); // Логируем сброс формы
     setFormValue({
       name: user.name,
       email: user.email,
