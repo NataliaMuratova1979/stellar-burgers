@@ -72,6 +72,7 @@ type TFeedsResponse = TServerResponse<{
 type TOrdersResponse = TServerResponse<{
   data: TOrder[];
 }>;
+
 //Функция getIngredientsApi предназначена для получения списка ингредиентов из API.
 export const getIngredientsApi = () =>
   fetch(`${URL}/ingredients`)
@@ -80,6 +81,7 @@ export const getIngredientsApi = () =>
       if (data?.success) return data.data;
       return Promise.reject(data);
     });
+
 // Эта функция выполняет HTTP-запрос для получения всех заказов (feeds).
 export const getFeedsApi = () =>
   fetch(`${URL}/orders/all`)
@@ -88,6 +90,7 @@ export const getFeedsApi = () =>
       if (data?.success) return data;
       return Promise.reject(data);
     });
+
 //Функция getOrdersApi предназначена для получения списка заказов из API с использованием функции fetchWithRefresh.
 export const getOrdersApi = () =>
   fetchWithRefresh<TFeedsResponse>(`${URL}/orders`, {
@@ -100,11 +103,13 @@ export const getOrdersApi = () =>
     if (data?.success) return data.orders;
     return Promise.reject(data);
   });
+
 //тип TNewOrderResponse представляет собой ответ от сервера, связанный с созданием нового заказа
 type TNewOrderResponse = TServerResponse<{
   order: TOrder;
   name: string;
 }>;
+
 //Функция orderBurgerApi предназначена для отправки нового заказа на сервер с использованием API.
 export const orderBurgerApi = (data: string[]) =>
   fetchWithRefresh<TNewOrderResponse>(`${URL}/orders`, {
@@ -121,9 +126,11 @@ export const orderBurgerApi = (data: string[]) =>
     return Promise.reject(data);
   });
 
+//тип данных заказов, возвращаемых сервером.
 type TOrderResponse = TServerResponse<{
   orders: TOrder[];
 }>;
+
 //Функция getOrderByNumberApi предназначена для получения информации о заказе по его номеру с использованием API.
 export const getOrderByNumberApi = (number: number) =>
   fetch(`${URL}/orders/${number}`, {
@@ -133,17 +140,20 @@ export const getOrderByNumberApi = (number: number) =>
     }
   }).then((res) => checkResponse<TOrderResponse>(res));
 
+// Определяем тип данных для регистрации нового пользователя
 export type TRegisterData = {
   email: string;
   name: string;
   password: string;
 };
 
+// Определяем тип ответа от сервера при аутентификации
 type TAuthResponse = TServerResponse<{
   refreshToken: string;
   accessToken: string;
   user: TUser;
 }>;
+
 //Функция registerUserApi предназначена для регистрации нового пользователя через API.
 export const registerUserApi = (data: TRegisterData) =>
   fetch(`${URL}/auth/register`, {
@@ -159,10 +169,12 @@ export const registerUserApi = (data: TRegisterData) =>
       return Promise.reject(data);
     });
 
+// Определяем тип данных для входа пользователя
 export type TLoginData = {
   email: string;
   password: string;
 };
+
 //Функция loginUserApi предназначена для выполнения входа пользователя через API.
 export const loginUserApi = (data: TLoginData) =>
   fetch(`${URL}/auth/login`, {
@@ -177,6 +189,7 @@ export const loginUserApi = (data: TLoginData) =>
       if (data?.success) return data;
       return Promise.reject(data);
     });
+
 //Функция forgotPasswordApi предназначена для обработки запроса на восстановление пароля пользователя через API.
 export const forgotPasswordApi = (data: { email: string }) =>
   fetch(`${URL}/password-reset`, {
@@ -191,6 +204,7 @@ export const forgotPasswordApi = (data: { email: string }) =>
       if (data?.success) return data;
       return Promise.reject(data);
     });
+
 //Функция resetPasswordApi предназначена для выполнения запроса на сброс пароля пользователя через API.
 export const resetPasswordApi = (data: { password: string; token: string }) =>
   fetch(`${URL}/password-reset/reset`, {
@@ -206,7 +220,9 @@ export const resetPasswordApi = (data: { password: string; token: string }) =>
       return Promise.reject(data);
     });
 
+// Определяем тип ответа от сервера для получения данных пользователя
 type TUserResponse = TServerResponse<{ user: TUser }>;
+
 //Функция getUserApi предназначена для получения информации о пользователе через API.
 export const getUserApi = () =>
   fetchWithRefresh<TUserResponse>(`${URL}/auth/user`, {
@@ -214,6 +230,7 @@ export const getUserApi = () =>
       authorization: getCookie('accessToken')
     } as HeadersInit
   });
+
 //Функция updateUserApi предназначена для обновления информации о пользователе через API.
 export const updateUserApi = (user: Partial<TRegisterData>) =>
   fetchWithRefresh<TUserResponse>(`${URL}/auth/user`, {
@@ -224,6 +241,7 @@ export const updateUserApi = (user: Partial<TRegisterData>) =>
     } as HeadersInit,
     body: JSON.stringify(user)
   });
+
 //Функция logoutApi предназначена для выполнения операции выхода пользователя из системы через API.
 export const logoutApi = () =>
   fetch(`${URL}/auth/logout`, {

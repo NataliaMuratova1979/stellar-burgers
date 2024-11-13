@@ -50,6 +50,10 @@ const App: React.FC = () => {
     (state: RootState) => state.ingredients
   );
 
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.user.isAuthenticated
+  ); // Проверяем, залогинен ли пользователь
+
   // Локальное состояние для управления открытием/закрытием модального окна
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -104,7 +108,7 @@ const App: React.FC = () => {
               <Route
                 path='/ingredients/:id'
                 element={
-                  <Modal title='Детали ингридиента' onClose={handleCloseModal}>
+                  <Modal title='Детали ингрeдиента' onClose={handleCloseModal}>
                     <IngredientDetails />
                   </Modal>
                 }

@@ -23,7 +23,7 @@ export const BurgerConstructorElement: FC<BurgerConstructorElementProps> = memo(
     };
 
     const handleClose = () => {
-      // Реализуйте логику для удаления ингредиента из конструктора
+      //  Логика для удаления ингредиента из конструктора
       dispatch(removeIngredient(ingredient.id));
       console.log('Удаление ингредиента: ${ingredient.id}');
     };

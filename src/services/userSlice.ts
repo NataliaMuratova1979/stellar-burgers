@@ -1,50 +1,156 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { TUser } from '@utils-types';
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { TUser } from '@utils-types'; // Убедитесь, что здесь правильный путь к вашему типу TUser
 import { RootState } from './store';
+import { createSelector } from '@reduxjs/toolkit';
+import { clearTokens, storeTokens } from '../utils/tokens';
 
-// Определяем тип начального состояния для пользователя
-type TInitialState = {
-  user: TUser;
-  isAuthenticated: boolean;
-  isInit: boolean;
-};
+import {
+  TRegisterData,
+  TLoginData,
+  registerUserApi,
+  loginUserApi,
+  getUserApi,
+  updateUserApi,
+  logoutApi
+} from '../utils/burger-api'; // Путь к API
+
+interface User {
+  name: string;
+  email: string;
+}
+
+// Интерфейс состояния пользователя
+interface UserState {
+  data: User;
+  isAuthenticated: boolean; // Флаг аутентификации
+  loading: boolean; // Состояние загрузки
+  error: string | null; // Ошибка, если есть
+}
 
 // Начальное состояние
-export const initialState: TInitialState = {
-  user: { name: '', email: '' }, // Информация о пользователе
-  isAuthenticated: false, // Флаг аутентификации пользователя
-  isInit: false // Флаг инициализации состояния пользователя
+const initialState: UserState = {
+  data: {
+    name: '',
+    email: ''
+  },
+  isAuthenticated: false,
+  loading: false,
+  error: null
 };
 
-// Создаем слайс для работы с пользователем
+// Асинхронное действие для регистрации пользователя
+export const registerUser = createAsyncThunk<TUser, TRegisterData>(
+  'user/register',
+  async (data, { rejectWithValue }) => {
+    const response = await registerUserApi(data);
+
+    if (!response?.success) {
+      return rejectWithValue(response);
+    }
+
+    const { user, refreshToken, accessToken } = response;
+
+    storeTokens(refreshToken, accessToken);
+
+    return user;
+  }
+);
+
+// Асинхронное действие для входа пользователя
+export const loginUser = createAsyncThunk<TUser, TLoginData>(
+  'user/login',
+  async (data, { rejectWithValue }) => {
+    const response = await loginUserApi(data);
+
+    if (!response?.success) {
+      return rejectWithValue(response);
+    }
+
+    const { user, refreshToken, accessToken } = response;
+
+    storeTokens(refreshToken, accessToken);
+
+    return user;
+  }
+);
+
+// Асинхронное действие для получения данных о пользователе
+export const fetchUser = createAsyncThunk(
+  'user/fetch',
+  async (_, { rejectWithValue }) => {
+    const response = await getUserApi();
+
+    if (!response?.success) {
+      return rejectWithValue(response);
+    }
+
+    return response.user;
+  }
+);
+
+// Асинхронное действие для обновления данных пользователя
+export const updateUser = createAsyncThunk<TUser, Partial<TRegisterData>>(
+  'user/update',
+  async (data, { rejectWithValue }) => {
+    const response = await updateUserApi(data);
+
+    if (!response?.success) {
+      return rejectWithValue(response);
+    }
+
+    return response.user;
+  }
+);
+
+export const logout = createAsyncThunk(
+  'user/logout',
+  async (_, { rejectWithValue }) => {
+    const response = await logoutApi();
+
+    if (!response?.success) {
+      return rejectWithValue(response);
+    }
+
+    clearTokens();
+  }
+);
+
+// Создание слайса
 const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {
-    // Инициализация состояния пользователя
-    init(state) {
-      console.log('Инициализируем состояние пользователя');
-      state.isInit = true; // Устанавливаем флаг инициализации
-    },
-    // Установка информации о пользователе
-    setUser(state, action: PayloadAction<TUser>) {
-      console.log('Устанавливаем информацию о пользователе:', action.payload);
-      state.user = action.payload; // Устанавливаем информацию о пользователе
-      state.isAuthenticated = true; // Устанавливаем флаг аутентификации в true
-    },
-    // Выход пользователя из системы
-    logout(state) {
-      console.log('Пользователь вышел из системы');
-      state.user = { name: '', email: '' }; // Очищаем информацию о пользователе
-      state.isAuthenticated = false; // Сбрасываем флаг аутентификации
-    }
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(registerUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(registerUser.fulfilled, (state, action: PayloadAction<User>) => {
+        // Изменяем TUser на User
+        state.loading = false;
+        state.data = action.payload; // Используем data вместо user
+        state.isAuthenticated = true;
+      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(loginUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(loginUser.fulfilled, (state, action: PayloadAction<User>) => {
+        // Изменяем TUser на User
+        state.loading = false;
+        state.data = action.payload; // Используем data вместо user
+        state.isAuthenticated = true;
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
   }
 });
 
-// Экспортируем редюсеры и селекторы
-export const { init, setUser, logout } = userSlice.actions;
-export const selectUser = (state: RootState) => state.user.user;
-export const selectIsAuthenticated = (state: RootState) =>
-  state.user.isAuthenticated;
-
-export default userSlice.reducer;
+export default userSlice.reducer; // Экспортируем редюсер по умолчанию
