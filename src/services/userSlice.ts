@@ -25,6 +25,7 @@ interface UserState {
   isAuthenticated: boolean; // Флаг аутентификации
   loading: boolean; // Состояние загрузки
   error: string | null; // Ошибка, если есть
+  isAuthChecked: boolean; // Флаг проверки аутентификации
 }
 
 // Начальное состояние
@@ -35,23 +36,30 @@ const initialState: UserState = {
   },
   isAuthenticated: false,
   loading: false,
-  error: null
+  error: null,
+  isAuthChecked: false
 };
 
 // Асинхронное действие для регистрации пользователя
 export const registerUser = createAsyncThunk<TUser, TRegisterData>(
   'user/register',
   async (data, { rejectWithValue }) => {
+    // Вызов API для регистрации пользователя с переданными данными
     const response = await registerUserApi(data);
 
+    // Проверка успешности ответа от API
     if (!response?.success) {
+      // Если ответ не успешен, возвращаем ошибку с помощью rejectWithValue
       return rejectWithValue(response);
     }
 
+    // Извлечение данных пользователя и токенов из ответа
     const { user, refreshToken, accessToken } = response;
 
+    // Сохранение токенов в локальное хранилище или куки
     storeTokens(refreshToken, accessToken);
 
+    // Возвращаем объект пользователя для дальнейшего использования в редюсере
     return user;
   }
 );
@@ -60,30 +68,40 @@ export const registerUser = createAsyncThunk<TUser, TRegisterData>(
 export const loginUser = createAsyncThunk<TUser, TLoginData>(
   'user/login',
   async (data, { rejectWithValue }) => {
+    // Вызов API для входа пользователя с переданными данными
     const response = await loginUserApi(data);
 
+    // Проверка успешности ответа от API
     if (!response?.success) {
+      // Если ответ не успешен, возвращаем ошибку с помощью rejectWithValue
       return rejectWithValue(response);
     }
 
+    // Извлечение данных пользователя и токенов из ответа
     const { user, refreshToken, accessToken } = response;
 
+    // Сохранение токенов в локальное хранилище или куки
     storeTokens(refreshToken, accessToken);
 
+    // Возвращаем объект пользователя для дальнейшего использования в редюсере
     return user;
   }
 );
 
-// Асинхронное действие для получения данных о пользователе
+// Асинхронное действие для получения данных о текущем пользователе
 export const fetchUser = createAsyncThunk(
   'user/fetch',
   async (_, { rejectWithValue }) => {
+    // Вызов API для получения данных о текущем пользователе
     const response = await getUserApi();
 
+    // Проверка успешности ответа от API
     if (!response?.success) {
+      // Если ответ не успешен, возвращаем ошибку с помощью rejectWithValue
       return rejectWithValue(response);
     }
 
+    // Возвращаем объект пользователя для дальнейшего использования в редюсере
     return response.user;
   }
 );
@@ -92,65 +110,111 @@ export const fetchUser = createAsyncThunk(
 export const updateUser = createAsyncThunk<TUser, Partial<TRegisterData>>(
   'user/update',
   async (data, { rejectWithValue }) => {
+    // Вызов API для обновления данных пользователя с переданными частичными данными
     const response = await updateUserApi(data);
 
+    // Проверка успешности ответа от API
     if (!response?.success) {
+      // Если ответ не успешен, возвращаем ошибку с помощью rejectWithValue
       return rejectWithValue(response);
     }
 
+    // Возвращаем обновленный объект пользователя для дальнейшего использования в редюсере
     return response.user;
   }
 );
 
+// Асинхронное действие для выхода пользователя
 export const logout = createAsyncThunk(
   'user/logout',
   async (_, { rejectWithValue }) => {
+    // Вызов API для выхода пользователя
     const response = await logoutApi();
 
+    // Проверка успешности ответа от API
     if (!response?.success) {
+      // Если ответ не успешен, возвращаем ошибку с помощью rejectWithValue
       return rejectWithValue(response);
     }
 
+    // Очистка токенов из локального хранилища или куки после успешного выхода
     clearTokens();
   }
 );
 
-// Создание слайса
+// Создание слайса пользователя с помощью Redux Toolkit
 const userSlice = createSlice({
-  name: 'user',
-  initialState,
-  reducers: {},
+  name: 'user', // Имя слайса
+  initialState, // Начальное состояние
+  reducers: {
+    // редюсер для сброса ошибки
+    resetError: (state) => {
+      state.error = null; // Сбрасываем ошибку
+    },
+    // редюсер для обновления данных пользователя
+    updateUserData: (state, action: PayloadAction<Partial<User>>) => {
+      state.data = { ...state.data, ...action.payload }; // Обновляем данные пользователя
+    },
+    // Редюсер для установки флага проверки аутентификации
+    setIsAuthChecked: (state, action: PayloadAction<boolean>) => {
+      state.isAuthChecked = action.payload; // Устанавливаем флаг проверки аутентификации
+    }
+  },
+
   extraReducers: (builder) => {
     builder
+      // Обработка состояния при регистрации пользователя
       .addCase(registerUser.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        console.log('Регистрация пользователя начата...'); // Лог начала регистрации
+        state.loading = true; // Устанавливаем состояние загрузки в true
+        state.error = null; // Сбрасываем ошибку перед началом регистрации
       })
       .addCase(registerUser.fulfilled, (state, action: PayloadAction<User>) => {
-        // Изменяем TUser на User
-        state.loading = false;
-        state.data = action.payload; // Используем data вместо user
-        state.isAuthenticated = true;
+        console.log('Регистрация пользователя успешна:', action.payload); // Лог успешной регистрации
+        state.loading = false; // Сбрасываем состояние загрузки
+        state.data = action.payload; // Сохраняем данные пользователя в состоянии
+        state.isAuthenticated = true; // Устанавливаем флаг аутентификации в true
       })
       .addCase(registerUser.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
+        console.error('Ошибка при регистрации пользователя:', action.payload); // Лог ошибки регистрации
+        state.loading = false; // Сбрасываем состояние загрузки
+        state.error = action.payload as string; // Сохраняем ошибку в состоянии
       })
+      // Обработка состояния при входе пользователя
       .addCase(loginUser.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        console.log('Вход пользователя начат...'); // Лог начала входа
+        state.loading = true; // Устанавливаем состояние загрузки в true
+        state.error = null; // Сбрасываем ошибку перед началом входа
       })
       .addCase(loginUser.fulfilled, (state, action: PayloadAction<User>) => {
-        // Изменяем TUser на User
-        state.loading = false;
-        state.data = action.payload; // Используем data вместо user
-        state.isAuthenticated = true;
+        console.log('Вход пользователя успешен:', action.payload); // Лог успешного входа
+        state.loading = false; // Сбрасываем состояние загрузки
+        state.data = action.payload; // Сохраняем данные пользователя в состоянии
+        state.isAuthenticated = true; // Устанавливаем флаг аутентификации в true
       })
       .addCase(loginUser.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
+        console.error('Ошибка при входе пользователя:', action.payload); // Лог ошибки входа
+        state.loading = false; // Сбрасываем состояние загрузки
+        state.error = action.payload as string; // Сохраняем ошибку в состоянии
+      })
+      // Обработка состояния при выходе пользователя
+      .addCase(logout.pending, (state) => {
+        console.log('Выход пользователя начат...'); // Лог начала выхода
+        state.loading = true; // Устанавливаем состояние загрузки в true
+      })
+      .addCase(logout.fulfilled, (state) => {
+        console.log('Выход пользователя успешен'); // Лог успешного выхода
+        state.loading = false; // Сбрасываем состояние загрузки
+        state.data = { name: '', email: '' }; // Сброс данных пользователя
+        state.isAuthenticated = false; // Устанавливаем флаг аутентификации в false
+      })
+      .addCase(logout.rejected, (state, action) => {
+        console.error('Ошибка при выходе пользователя:', action.payload); // Лог ошибки выхода
+        state.loading = false; // Сбрасываем состояние загрузки
+        state.error = action.payload as string; // Сохраняем ошибку в состоянии
       });
   }
 });
 
-export default userSlice.reducer; // Экспортируем редюсер по умолчанию
+// Экспортируем редюсер по умолчанию для использования в хранилище Redux
+export default userSlice.reducer;

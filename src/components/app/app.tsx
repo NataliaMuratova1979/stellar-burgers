@@ -91,12 +91,13 @@ const App: React.FC = () => {
             <Route path='/feed' element={<Feed />} />
             <Route path='/feedinfo' element={<FeedInfo />} />
             <Route path='/feed/:number' element={<OrderInfo />} />
-
-            <Route path='/login' element={<Login />} />
+            <Route path='/login' element={<Login />} /> /** защитить от доступа
+            авторизованного пользователя */
             <Route path='/register' element={<Register />} />
             <Route path='/forgot-password' element={<ForgotPassword />} />
             <Route path='/reset-password' element={<ResetPassword />} />
-            <Route path='/profile' element={<Profile />} />
+            <Route path='/profile' element={<Profile />} /> /** защитить от
+            доступа неавторизованного пользователя */
             <Route path='/profile/orders' element={<ProfileOrders />} />
             <Route path='/*' element={<NotFound404 />} />
             <Route path='/ingredients/:id' element={<IngredientDetails />} />
