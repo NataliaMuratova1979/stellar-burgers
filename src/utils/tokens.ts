@@ -75,3 +75,22 @@ export const updateTokens = (
 
   console.log('Токены успешно обновлены.');
 };
+
+/**
+ * Проверяет состояние токенов.
+ * @returns Объект с состоянием токенов.
+ */
+export const checkTokenStatus = () => {
+  const accessToken = getAccessToken();
+  const refreshToken = getRefreshToken();
+
+  const isAccessTokenValid = accessToken && !isAccessTokenExpired(accessToken);
+  const isRefreshTokenValid = !!refreshToken;
+
+  return {
+    isAccessTokenValid,
+    isRefreshTokenValid,
+    accessToken,
+    refreshToken
+  };
+};

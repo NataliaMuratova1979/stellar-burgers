@@ -216,5 +216,26 @@ const userSlice = createSlice({
   }
 });
 
+// Селектор для получения состояния пользователя
+export const selectUser = (state: RootState) => state.user;
+
+// Селектор для получения данных пользователя
+export const selectUserData = createSelector(selectUser, (user) => user.data);
+
+// Селектор для получения состояния загрузки
+export const selectIsLoading = createSelector(
+  selectUser,
+  (user) => user.loading
+);
+
+// Селектор для получения ошибки
+export const selectError = createSelector(selectUser, (user) => user.error);
+
+// Селектор для проверки аутентификации пользователя
+export const selectIsAuthenticated = createSelector(
+  selectUser,
+  (user) => user.isAuthenticated
+);
+
 // Экспортируем редюсер по умолчанию для использования в хранилище Redux
 export default userSlice.reducer;

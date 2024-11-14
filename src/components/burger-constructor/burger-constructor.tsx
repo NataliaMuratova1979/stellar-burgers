@@ -8,6 +8,8 @@ import {
   setOrderModalData
 } from '../../services/burgerSlice'; // Импортируем действия из burgerSlice
 
+import { useNavigate } from 'react-router-dom'; // Импортируем хук для навигации
+
 export const BurgerConstructor: FC = () => {
   // Получаем состояние из Redux
   const constructorItems = useSelector(
@@ -18,7 +20,12 @@ export const BurgerConstructor: FC = () => {
     (state: any) => state.burger.orderModalData
   );
 
+  const isAuthenticated = useSelector(
+    (state: any) => state.user.isAuthenticated
+  ); // Получаем состояние авторизации
+
   const dispatch = useDispatch(); // Инициализируем dispatch
+  const navigate = useNavigate(); // Инициализируем хук навигации
 
   console.log('Constructor Items:', constructorItems);
   console.log('Order Request Status:', orderRequest);
@@ -26,6 +33,13 @@ export const BurgerConstructor: FC = () => {
 
   const onOrderClick = () => {
     console.log('Order button clicked');
+
+    if (!isAuthenticated) {
+      // Проверяем, авторизован ли пользователь
+      console.log('User is not authenticated, redirecting to login');
+      navigate('/login'); // Перенаправляем на страницу входа
+      return;
+    }
 
     if (!constructorItems.bun || orderRequest) {
       console.log(

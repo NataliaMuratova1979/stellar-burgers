@@ -44,4 +44,9 @@ const ingredientsSlice = createSlice({
   }
 });
 
+// Селектор для получения состояния загрузки
+export const selectIsIngredientsLoading = (state: {
+  ingredients: IngredientsState;
+}) => state.ingredients.loading;
+
 export default ingredientsSlice.reducer;
