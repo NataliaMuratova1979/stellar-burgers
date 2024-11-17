@@ -1,64 +1,82 @@
 import { FC, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux'; // Импортируем хуки
-import { TConstructorIngredient } from '@utils-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { TConstructorIngredient, TOrder } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
 import {
   setOrderRequest,
   clearConstructor,
-  setOrderModalData
-} from '../../services/burgerSlice'; // Импортируем действия из burgerSlice
-
-import { useNavigate } from 'react-router-dom'; // Импортируем хук для навигации
+  setOrderModalData,
+  placeOrder
+} from '../../services/burgerSlice';
+import { RootState, AppDispatch } from '../../services/store';
+import { useNavigate } from 'react-router-dom';
 
 export const BurgerConstructor: FC = () => {
-  // Получаем состояние из Redux
   const constructorItems = useSelector(
-    (state: any) => state.burger.constructorItems
+    (state: RootState) => state.burger.constructorItems
   );
-  const orderRequest = useSelector((state: any) => state.burger.orderRequest);
+  const orderRequest = useSelector(
+    (state: RootState) => state.burger.orderRequest
+  );
   const orderModalData = useSelector(
-    (state: any) => state.burger.orderModalData
+    (state: RootState) => state.burger.orderModalData
+  );
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.user.isAuthenticated
   );
 
-  const isAuthenticated = useSelector(
-    (state: any) => state.user.isAuthenticated
-  ); // Получаем состояние авторизации
-
-  const dispatch = useDispatch(); // Инициализируем dispatch
-  const navigate = useNavigate(); // Инициализируем хук навигации
-
-  console.log('Constructor Items:', constructorItems);
-  console.log('Order Request Status:', orderRequest);
-  console.log('Order Modal Data:', orderModalData);
+  const dispatch: AppDispatch = useDispatch();
+  const navigate = useNavigate();
 
   const onOrderClick = () => {
-    console.log('Order button clicked');
-
     if (!isAuthenticated) {
-      // Проверяем, авторизован ли пользователь
-      console.log('User is not authenticated, redirecting to login');
-      navigate('/login'); // Перенаправляем на страницу входа
+      console.log(
+        'Пользователь не аутентифицирован. Перенаправление на страницу входа.'
+      );
+      navigate('/login');
       return;
     }
 
     if (!constructorItems.bun || orderRequest) {
       console.log(
-        'Order cannot be placed. Bun is missing or request is in progress.'
+        'Нет булки или запрос уже отправлен. Отмена оформления заказа.'
       );
       return;
     }
 
-    dispatch(setOrderRequest(true)); // Устанавливаем статус запроса на оформление заказа
-    console.log('Order request initiated');
+    const ingredientIds: string[] = [
+      constructorItems.bun._id,
+      ...constructorItems.ingredients.map(
+        (ingredient: TConstructorIngredient) => ingredient._id
+      )
+    ];
 
-    // После успешного оформления заказа можно установить данные о заказе
-    // dispatch(setOrderModalData(orderData)); // Пример установки данных о заказе
+    console.log(
+      'Отправка запроса на оформление заказа с ингредиентами:',
+      ingredientIds
+    );
+
+    dispatch(setOrderRequest(true));
+
+    dispatch(placeOrder(ingredientIds))
+      .unwrap()
+      .then((orderData: TOrder) => {
+        console.log('Заказ успешно оформлен:', orderData);
+        dispatch(setOrderModalData(orderData));
+      })
+      .catch((error: unknown) => {
+        console.error('Ошибка при оформлении заказа:', error);
+      })
+      .finally(() => {
+        console.log('Запрос на оформление заказа завершен.');
+        dispatch(setOrderRequest(false));
+      });
   };
 
   const closeOrderModal = () => {
-    console.log('Closing order modal');
-    dispatch(clearConstructor()); // Очищаем конструктор
-    dispatch(setOrderModalData(null)); // Закрываем модальное окно заказа
+    console.log('Закрытие модального окна заказа.');
+    dispatch(clearConstructor());
+    dispatch(setOrderModalData(null));
   };
 
   const price = useMemo(() => {
@@ -68,7 +86,6 @@ export const BurgerConstructor: FC = () => {
         (s: number, v: TConstructorIngredient) => s + v.price,
         0
       );
-    console.log('Calculated Price:', calculatedPrice);
     return calculatedPrice;
   }, [constructorItems]);
 

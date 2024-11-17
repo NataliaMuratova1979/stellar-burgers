@@ -1,6 +1,12 @@
-import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit';
+import {
+  createSlice,
+  PayloadAction,
+  createSelector,
+  createAsyncThunk
+} from '@reduxjs/toolkit';
 import { TConstructorIngredient, TOrder } from '@utils-types'; // Импортируем ваши типы
 import { RootState } from './store'; // Импортируйте тип корневого состояния вашего Redux Store
+import { orderBurgerApi } from '../utils/burger-api'; // Путь к файлу API
 
 // Определяем интерфейсы для состояния - в конструкторе должна быть булка и ингредиенты
 interface ConstructorItems {
@@ -13,6 +19,7 @@ interface BurgerState {
   constructorItems: ConstructorItems;
   orderRequest: boolean; // Запрос на оформление заказа
   orderModalData: TOrder | null; // Данные о заказе
+  orderError: string | null; // Для хранения ошибки
 }
 
 // Начальное состояние
@@ -22,8 +29,22 @@ const initialState: BurgerState = {
     ingredients: []
   },
   orderRequest: false,
-  orderModalData: null
+  orderModalData: null,
+  orderError: null // Изначально ошибки нет
 };
+
+// Создаем thunk для отправки заказа
+export const placeOrder = createAsyncThunk(
+  'burger/placeOrder',
+  async (ingredients: string[], { rejectWithValue }) => {
+    try {
+      const response = await orderBurgerApi(ingredients);
+      return response.order; // Возвращаем данные о заказе
+    } catch (error) {
+      return rejectWithValue(error); // Обрабатываем ошибку
+    }
+  }
+);
 
 // Создаем слайс
 const burgerSlice = createSlice({
@@ -100,6 +121,23 @@ const burgerSlice = createSlice({
         console.log('Ингредиент перемещен вниз:', movedIngredient);
       }
     }
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(placeOrder.pending, (state) => {
+        state.orderRequest = true; // Устанавливаем статус запроса в true
+        state.orderError = null; // Сбрасываем ошибку
+      })
+      .addCase(placeOrder.fulfilled, (state, action) => {
+        state.orderRequest = false; // Запрос завершен
+        state.orderModalData = action.payload; // Устанавливаем данные о заказе
+        console.log('Заказ успешно оформлен:', action.payload);
+      })
+      .addCase(placeOrder.rejected, (state, action) => {
+        state.orderRequest = false; // Запрос завершен
+        state.orderError = action.payload as string; // Устанавливаем ошибку
+        console.error('Ошибка при оформлении заказа:', action.payload);
+      });
   }
 });
 
@@ -139,3 +177,6 @@ export const selectTotalIngredientsCount = createSelector(
   [selectIngredients],
   (ingredients) => ingredients.length
 );
+
+// Селектор для получения состояния заказа
+export const selectOrderError = (state: RootState) => state.burger.orderError;

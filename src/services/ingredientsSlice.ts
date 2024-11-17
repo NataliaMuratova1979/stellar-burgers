@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getIngredientsApi } from '../utils/burger-api'; // Путь к вашему файлу API
-import { TIngredient } from '../utils/types'; // Импортируйте ваши типы
+import { getIngredientsApi } from '../utils/burger-api'; // Путь к файлу API
+import { TIngredient } from '../utils/types'; //  типы
 
 interface IngredientsState {
   ingredients: TIngredient[];
