@@ -16,16 +16,19 @@ const initialState: OrdersState = {
 };
 
 // Создаем асинхронный thunk для получения заказов
-export const fetchOrders = createAsyncThunk('orders/fetchOrders', async () => {
-  console.log('Fetching orders from the server...'); // Логируем начало загрузки
-  const orders = await getOrdersApi(); // Получаем заказы через API
-  console.log('Orders fetched:', orders); // Логируем полученные заказы
-  return orders; // Возвращаем заказы
-});
+export const fetchUsersOrders = createAsyncThunk(
+  'orders/fetchOrders',
+  async () => {
+    console.log('Fetching orders from the server...'); // Логируем начало загрузки
+    const orders = await getOrdersApi(); // Получаем заказы через API
+    console.log('Orders fetched:', orders); // Логируем полученные заказы
+    return orders; // Возвращаем заказы
+  }
+);
 
 // Создаем слайс
-const ordersSlice = createSlice({
-  name: 'orders',
+const userOrdersSlice = createSlice({
+  name: 'usersOrders', // Изменено имя слайса на 'usersOrders'
   initialState,
   reducers: {
     setError(state, action) {
@@ -39,17 +42,21 @@ const ordersSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchOrders.pending, (state) => {
+      .addCase(fetchUsersOrders.pending, (state) => {
         state.loading = true; // Устанавливаем состояние загрузки
         state.error = null; // Сбрасываем ошибку
-        console.log('Loading orders...'); // Логируем начало загрузки
+        console.log('usersOrdersSlice, Loading orders...'); // Логируем начало загрузки
       })
-      .addCase(fetchOrders.fulfilled, (state, action) => {
+      .addCase(fetchUsersOrders.fulfilled, (state, action) => {
         state.loading = false; // Устанавливаем состояние загрузки в false
+        console.log('ЗАКАЗЫ УСПЕШНО ПОЛУЧЕНЫ');
         state.orders = action.payload; // Сохраняем полученные заказы в состоянии
-        console.log('Orders loaded successfully:', action.payload); // Логируем успешную загрузку заказов
+        console.log(
+          'usersOrdersSlice, Orders loaded successfully:',
+          action.payload
+        ); // Логируем успешную загрузку заказов
       })
-      .addCase(fetchOrders.rejected, (state, action) => {
+      .addCase(fetchUsersOrders.rejected, (state, action) => {
         state.loading = false; // Устанавливаем состояние загрузки в false
         state.error = action.error.message || 'Failed to load orders'; // Устанавливаем сообщение об ошибке
         console.log('Failed to load orders:', action.error.message); // Логируем ошибку при загрузке заказов
@@ -58,23 +65,30 @@ const ordersSlice = createSlice({
 });
 
 // Экспортируем действия и редьюсер
-export const { setError, clearError } = ordersSlice.actions;
-export default ordersSlice.reducer;
+export const { setError, clearError } = userOrdersSlice.actions;
+export default userOrdersSlice.reducer;
 
 // Селектор для получения заказов
-export const selectOrders = (state: { orders: OrdersState }) => {
-  console.log('Selecting orders from state:', state.orders.orders); // Логируем выбор заказов из состояния
-  return state.orders.orders; // Возвращаем заказы из состояния
+export const selectUsersOrders = (state: { usersOrders: OrdersState }) => {
+  const orders = state.usersOrders.orders || []; // Получаем заказы из состояния или пустой массив
+  console.log('usersOrdersSlice, Selecting orders from state:', orders); // Логируем выбор заказов из состояния
+  return orders; // Возвращаем заказы из состояния
 };
 
 // Селектор для получения состояния загрузки
-export const selectLoading = (state: { orders: OrdersState }) => {
-  console.log('Selecting loading state:', state.orders.loading); // Логируем состояние загрузки
-  return state.orders.loading; // Возвращаем состояние загрузки
+export const selectUsersLoading = (state: { usersOrders: OrdersState }) => {
+  console.log(
+    'usersOrdersSlice, Selecting loading state:',
+    state.usersOrders.loading
+  ); // Логируем состояние загрузки
+  return state.usersOrders.loading; // Возвращаем состояние загрузки
 };
 
 // Селектор для получения ошибки
-export const selectError = (state: { orders: OrdersState }) => {
-  console.log('Selecting error state:', state.orders.error); // Логируем состояние ошибки
-  return state.orders.error; // Возвращаем сообщение об ошибке
+export const selectUsersError = (state: { usersOrders: OrdersState }) => {
+  console.log(
+    'usersOrdersSlice, Selecting error state:',
+    state.usersOrders.error
+  ); // Логируем состояние ошибки
+  return state.usersOrders.error; // Возвращаем сообщение об ошибке
 };

@@ -5,6 +5,8 @@ import ingredientsReducer from './ingredientsSlice'; // слайс ингред�
 import burgerReducer from './burgerSlice';
 import ordersReducer from './ordersSlice';
 import userReducer from './userSlice';
+import usersOrdersReducer from './usersOrdersSlice';
+
 //import tokenReducer from './tokenSlice';
 
 const rootReducer = combineReducers({
@@ -12,7 +14,8 @@ const rootReducer = combineReducers({
   //constructor: constructorReducer,
   burger: burgerReducer,
   orders: ordersReducer,
-  user: userReducer
+  user: userReducer,
+  usersOrders: usersOrdersReducer
   //token: authSlice
 });
 

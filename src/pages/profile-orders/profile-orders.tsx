@@ -4,26 +4,30 @@ import React, { FC, useEffect } from 'react'; // Импортируем React и
 
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  fetchOrders,
-  selectOrders,
-  selectLoading,
-  selectError
+  fetchUsersOrders,
+  selectUsersOrders,
+  selectUsersLoading,
+  selectUsersError
 } from '../../services/usersOrdersSlice';
 
-import { AppDispatch } from '../../services/store';
+import { AppDispatch, RootState } from '../../services/store';
 
 export const ProfileOrders: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   // Получаем заказы, состояние загрузки и ошибки из Redux-хранилища
 
-  const orders: TOrder[] = useSelector(selectOrders);
-  const loading = useSelector(selectLoading);
-  const error = useSelector(selectError);
+  const orders: TOrder[] = useSelector((state: RootState) =>
+    selectUsersOrders(state)
+  );
+
+  const loading = useSelector((state: RootState) => selectUsersLoading(state));
+  const error = useSelector((state: RootState) => selectUsersError(state));
 
   useEffect(() => {
-    dispatch(fetchOrders()); // Загружаем заказы при монтировании компонента
-  }, [dispatch]);
+    console.log('Отправка запроса на получение заказов...');
+    dispatch(fetchUsersOrders()); // Загружаем заказы при монтировании компонента
+  }, []);
 
   if (loading) {
     return <div>Loading...</div>; // Показываем индикатор загрузки
@@ -32,6 +36,7 @@ export const ProfileOrders: FC = () => {
   if (error) {
     return <div>Error: {error}</div>; // Показываем сообщение об ошибке, если есть
   }
+  console.log('Заказы компонента profile-Orders:', orders); // тут не отображаются заказы!!!
 
   return <ProfileOrdersUI orders={orders} />; // Отображаем заказы в UI-компоненте
 };
