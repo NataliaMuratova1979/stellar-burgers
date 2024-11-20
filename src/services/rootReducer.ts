@@ -6,6 +6,7 @@ import burgerReducer from './burgerSlice';
 import ordersReducer from './ordersSlice';
 import userReducer from './userSlice';
 import usersOrdersReducer from './usersOrdersSlice';
+import orderNumberReducer from './orderNumberSlice'; // Импортируем редюсер для заказов по номеру
 
 //import tokenReducer from './tokenSlice';
 
@@ -15,7 +16,8 @@ const rootReducer = combineReducers({
   burger: burgerReducer,
   orders: ordersReducer,
   user: userReducer,
-  usersOrders: usersOrdersReducer
+  usersOrders: usersOrdersReducer,
+  orderNumber: orderNumberReducer
   //token: authSlice
 });
 

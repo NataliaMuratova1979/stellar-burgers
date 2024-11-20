@@ -17,7 +17,7 @@ export const ProfileOrders: FC = () => {
 
   // Получаем заказы, состояние загрузки и ошибки из Redux-хранилища
 
-  const orders: TOrder[] = useSelector((state: RootState) =>
+  const userOrders: TOrder[] = useSelector((state: RootState) =>
     selectUsersOrders(state)
   );
 
@@ -36,7 +36,7 @@ export const ProfileOrders: FC = () => {
   if (error) {
     return <div>Error: {error}</div>; // Показываем сообщение об ошибке, если есть
   }
-  console.log('Заказы компонента profile-Orders:', orders); // тут не отображаются заказы!!!
+  console.log('Заказы компонента profile-Orders:', userOrders); // тут не отображаются заказы!!!
 
-  return <ProfileOrdersUI orders={orders} />; // Отображаем заказы в UI-компоненте
+  return <ProfileOrdersUI orders={userOrders} />; // Отображаем заказы в UI-компоненте
 };

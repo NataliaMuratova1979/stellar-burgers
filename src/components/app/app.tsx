@@ -99,6 +99,7 @@ const App: React.FC = () => {
             <Route path='/profile' element={<Profile />} /> /** защитить от
             доступа неавторизованного пользователя */
             <Route path='/profile/orders' element={<ProfileOrders />} />
+            <Route path='/profile/orders/:number' element={<OrderInfo />} />
             <Route path='/*' element={<NotFound404 />} />
             <Route path='/ingredients/:id' element={<IngredientDetails />} />
           </Routes>
