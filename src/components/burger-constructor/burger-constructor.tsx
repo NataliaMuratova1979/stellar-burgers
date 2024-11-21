@@ -21,9 +21,13 @@ export const BurgerConstructor: FC = () => {
   const orderModalData = useSelector(
     (state: RootState) => state.burger.orderModalData
   );
-  const isAuthenticated = useSelector(
-    (state: RootState) => state.user.isAuthenticated
-  );
+
+  // Получение информации о аутентификации пользователя
+  const isAuthenticated = useSelector((state: RootState) => {
+    const authStatus = state.user.isAuthenticated;
+    console.log('Получение статуса аутентификации пользователя:', authStatus);
+    return authStatus;
+  });
 
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();

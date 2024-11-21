@@ -239,3 +239,6 @@ export const selectIsAuthenticated = createSelector(
 
 // Экспортируем редюсер по умолчанию для использования в хранилище Redux
 export default userSlice.reducer;
+
+// Селектор для получения имени пользователя
+export const selectUserName = (state: RootState) => state.user.data.name;
