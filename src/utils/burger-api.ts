@@ -37,23 +37,33 @@ export const refreshToken = (): Promise<TRefreshResponse> =>
     });
 
 //Код  представляет собой функцию fetchWithRefresh, которая выполняет HTTP-запрос с обработкой возможного истечения токена доступа (JWT).
+// Экспортируем асинхронную функцию fetchWithRefresh, которая выполняет HTTP-запрос с обработкой возможного истечения токена доступа (JWT)
 export const fetchWithRefresh = async <T>(
-  url: RequestInfo,
-  options: RequestInit
+  url: RequestInfo, // URL запроса
+  options: RequestInit // Опции запроса (метод, заголовки и т.д.)
 ) => {
   try {
+    // Выполняем HTTP-запрос с использованием fetch и ждем ответа
     const res = await fetch(url, options);
+    // Обрабатываем ответ с помощью функции checkResponse и возвращаем результат
     return await checkResponse<T>(res);
   } catch (err) {
+    // Обрабатываем возможные ошибки при выполнении запроса
     if ((err as { message: string }).message === 'jwt expired') {
-      const refreshData = await refreshToken();
+      // Если ошибка связана с истечением срока действия JWT токена
+      const refreshData = await refreshToken(); // Обновляем токен, вызывая функцию refreshToken()
+      // Проверяем, есть ли заголовки в опциях запроса
       if (options.headers) {
+        // Если заголовки существуют, обновляем заголовок authorization новым access-токеном
         (options.headers as { [key: string]: string }).authorization =
           refreshData.accessToken;
       }
+      // Повторяем HTTP-запрос с обновленным токеном
       const res = await fetch(url, options);
+      // Обрабатываем ответ повторного запроса и возвращаем результат
       return await checkResponse<T>(res);
     } else {
+      // Если ошибка не связана с истечением токена, отклоняем промис с ошибкой
       return Promise.reject(err);
     }
   }

@@ -1,16 +1,12 @@
 import { FC, SyntheticEvent, useState } from 'react';
 import { RegisterUI } from '@ui-pages';
 import { useDispatch, useSelector } from 'react-redux';
-import { registerUser } from '../../services/userSlice'; // Импортируйте ваше действие регистрации
+import { registerUser } from '../../services/userSlice';
 import { RootState } from '../../services/store';
-import { useNavigate } from 'react-router-dom';
-import { AppDispatch } from '../../services/store'; // Импортируйте ваш тип AppDispatch
+import { AppDispatch } from '../../services/store';
 
 export const Register: FC = () => {
-  // Используем useDispatch для получения метода dispatch из Redux
   const dispatch = useDispatch<AppDispatch>();
-  // Используем useNavigate для навигации между страницами
-  const navigate = useNavigate();
 
   // Состояния для хранения данных формы
   const [userName, setUserName] = useState('');
@@ -29,9 +25,12 @@ export const Register: FC = () => {
       await dispatch(
         registerUser({ name: userName, email, password })
       ).unwrap();
-
-      navigate('/profile', { replace: true });
-    } catch (_) {}
+      console.log('Registration successful!'); // Логируем успешную регистрацию
+      // Здесь можно добавить логику после успешной регистрации, если необходимо
+    } catch (err) {
+      console.error('Registration failed:', err); // Логируем ошибку при регистрации
+      setErrorMessage('Registration failed. Please try again.'); // Устанавливаем сообщение об ошибке
+    }
   };
 
   return (

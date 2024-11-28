@@ -1,0 +1,144 @@
+[33mcommit ea2e24e84c20e8447a33c4b75c62d2cbe2334a86[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mreview[m[33m, [m[1;31morigin/review[m[33m)[m
+Author: NataliaMuratova1979 <mno@mail.ru>
+Date:   Thu Nov 21 20:22:21 2024 +0300
+
+    Авторизацияяяяяя
+
+[33mcommit 300033d78c7259f2feb366ca5320f296b4bca024[m
+Author: NataliaMuratova1979 <mno@mail.ru>
+Date:   Thu Nov 21 10:06:06 2024 +0300
+
+    Имя юзера в меню
+
+[33mcommit 49204122c60c1cabce50d63c9dfd4afcab966bbc[m
+Author: NataliaMuratova1979 <mno@mail.ru>
+Date:   Wed Nov 20 14:30:52 2024 +0300
+
+    OrderInfo
+
+[33mcommit a1f05526da6923ef803797c46ef2c87f596b257f[m
+Author: NataliaMuratova1979 <mno@mail.ru>
+Date:   Tue Nov 19 15:06:24 2024 +0300
+
+    заказы пользователя
+
+[33mcommit 975d7a5e098911132f7db0851fe6e76a58bdfbed[m
+Author: NataliaMuratova1979 <mno@mail.ru>
+Date:   Sun Nov 17 20:43:33 2024 +0300
+
+    Отправляем заказ на сервер
+
+[33mcommit 40100ff4f6eb383550b812aa2ce33d76ef989aa1[m
+Author: NataliaMuratova1979 <mno@mail.ru>
+Date:   Sun Nov 17 19:41:09 2024 +0300
+
+    Слайс для заказов юзера
+
+[33mcommit 6fafa9dacba0ffec1866b6654ddcb306e940e0e2[m
+Author: NataliaMuratova1979 <mno@mail.ru>
+Date:   Thu Nov 14 20:56:51 2024 +0300
+
+    кнопка оформления заказа
+
+[33mcommit e0e3b7bc6dbfe0074cc5dab0aae759af06cda5a9[m
+Author: NataliaMuratova1979 <mno@mail.ru>
+Date:   Thu Nov 14 19:55:46 2024 +0300
+
+    работаем над юзером
+
+[33mcommit 60fae24053df39afe15acce98cb393f0778c243b[m
+Author: NataliaMuratova1979 <mno@mail.ru>
+Date:   Wed Nov 13 15:05:33 2024 +0300
+
+    регистрация
+
+[33mcommit c64bcb30e45952c5c73fce97a0358f14a8de9a56[m
+Author: NataliaMuratova1979 <mno@mail.ru>
+Date:   Wed Nov 13 14:53:28 2024 +0300
+
+    tokenssss
+
+[33mcommit d7bfeb9ba1156aa615053ae349559e574942f7a2[m
+Author: NataliaMuratova1979 <mno@mail.ru>
+Date:   Wed Nov 13 14:02:21 2024 +0300
+
+    userrrrrrrrrrr
+
+[33mcommit 52b8358bdaa5280bb7ad0ef8a93335ad12b6a82d[m
+Author: NataliaMuratova1979 <mno@mail.ru>
+Date:   Mon Nov 11 21:27:23 2024 +0300
+
+    Сделан OrderInfo
+
+[33mcommit c8d562f987b7f66455ea53e885c5ef1de74b3f28[m
+Author: NataliaMuratova1979 <mno@mail.ru>
+Date:   Thu Nov 7 18:09:28 2024 +0300
+
+    попытка сделать feed
+
+[33mcommit 74aa76d3cb4b9562c1786c5ac74f5e2bc0867968[m
+Author: NataliaMuratova1979 <mno@mail.ru>
+Date:   Tue Nov 5 14:11:24 2024 +0300
+
+    работает удаление начинки
+
+[33mcommit 55b19432bb262a15a115850b1b946bb71bb152bc[m
+Author: NataliaMuratova1979 <mno@mail.ru>
+Date:   Tue Nov 5 13:52:54 2024 +0300
+
+    перемещение ингредиентов вверх и вниз
+
+[33mcommit 9b5916829f13bc076887aca9452c71caffe349b7[m
+Author: NataliaMuratova1979 <mno@mail.ru>
+Date:   Tue Nov 5 13:05:22 2024 +0300
+
+    конструктор работает, но без id
+
+[33mcommit c3dfdebede4dfd5ce7d88fafaf3caef2bf72a642[m
+Author: NataliaMuratova1979 <mno@mail.ru>
+Date:   Mon Nov 4 20:38:24 2024 +0300
+
+    конструктор-фигня
+
+[33mcommit f4692ee3266d92c046fe292ed8adcc25859cbafc[m
+Merge: 9515ee6 8925f9f
+Author: NataliaMuratova1979 <mno@mail.ru>
+Date:   Mon Nov 4 14:08:42 2024 +0300
+
+    Merge branch 'review' of https://github.com/NataliaMuratova1979/stellar-burgers into review
+
+[33mcommit 9515ee6cbf6bf1adb2ca1ee5081ee751c6744425[m
+Author: NataliaMuratova1979 <mno@mail.ru>
+Date:   Mon Nov 4 14:08:11 2024 +0300
+
+    комменты
+
+[33mcommit f5aa167bceb5608aad655e21bb73b845f6b4935a[m
+Author: NataliaMuratova1979 <mno@mail.ru>
+Date:   Mon Nov 4 14:04:04 2024 +0300
+
+    комменты
+
+[33mcommit 8925f9fcf16a5cfc19bc90c834244de373def1a6[m
+Author: NataliaMuratova1979 <mno@mail.ru>
+Date:   Sat Nov 2 16:30:59 2024 +0300
+
+    сделаны детали ингредиента
+
+[33mcommit 05e566fdae19cce3d967c0015079b182018018bd[m
+Author: NataliaMuratova1979 <mno@mail.ru>
+Date:   Sat Nov 2 12:03:00 2024 +0300
+
+    Первый слайс
+
+[33mcommit c4b97d6eb2350d109287c7a2ff19f4a0c065eb0a[m
+Author: NataliaMuratova1979 <mno@mail.ru>
+Date:   Wed Oct 30 12:22:42 2024 +0300
+
+    установлена react-router-dom
+
+[33mcommit b1cbda6d544bbfc72c9fbdd3623c47aff6026308[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m
+Author: NataliaMuratova1979 <157346349+NataliaMuratova1979@users.noreply.github.com>
+Date:   Tue Oct 29 13:30:40 2024 +0300
+
+    Initial commit

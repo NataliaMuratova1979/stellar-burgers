@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../../services/userSlice';
 import { RootState } from '../../services/store';
 
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { AppDispatch } from '../../services/store';
 
 export const Login: FC = () => {
@@ -14,11 +14,10 @@ export const Login: FC = () => {
   const [password, setPassword] = useState('');
 
   // Получаем dispatch для отправки действий в Redux
-  const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch<AppDispatch>();
 
-  // Определяем путь для перенаправления после входа
+  // Определяем путь для перенаправления после входа (но не используем)
   const from = location.state?.from || '/'; // Задаем путь по умолчанию
 
   // Извлечение состояния загрузки и ошибки из Redux
@@ -32,10 +31,8 @@ export const Login: FC = () => {
     try {
       // Отправляем действие для логина пользователя
       await dispatch(loginUser({ email, password })).unwrap();
-      // Перенаправляем пользователя на главную страницу
-      navigate('/', { replace: true });
       console.log('Login successful!'); // Логируем успешный вход
-      // Здесь можно добавить логику перенаправления или другие действия после успешного логина
+      // Здесь можно добавить логику после успешного логина, если необходимо
     } catch (err) {
       console.error('Login failed:', err); // Логируем ошибку при входе
     }

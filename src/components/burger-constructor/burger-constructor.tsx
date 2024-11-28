@@ -8,6 +8,8 @@ import {
   setOrderModalData,
   placeOrder
 } from '../../services/burgerSlice';
+import { checkTokenStatus } from '../../utils/tokens'; // Импортируйте функцию проверки токенов
+
 import { RootState, AppDispatch } from '../../services/store';
 import { useNavigate } from 'react-router-dom';
 
@@ -22,20 +24,15 @@ export const BurgerConstructor: FC = () => {
     (state: RootState) => state.burger.orderModalData
   );
 
-  // Получение информации о аутентификации пользователя
-  const isAuthenticated = useSelector((state: RootState) => {
-    const authStatus = state.user.isAuthenticated;
-    console.log('Получение статуса аутентификации пользователя:', authStatus);
-    return authStatus;
-  });
-
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
 
   const onOrderClick = () => {
-    if (!isAuthenticated) {
+    const { isAccessTokenValid, isRefreshTokenValid } = checkTokenStatus();
+
+    if (!isAccessTokenValid) {
       console.log(
-        'Пользователь не аутентифицирован. Перенаправление на страницу входа.'
+        'Токен доступа недействителен. Перенаправление на страницу входа.'
       );
       navigate('/login');
       return;
@@ -65,7 +62,6 @@ export const BurgerConstructor: FC = () => {
     dispatch(placeOrder(ingredientIds))
       .unwrap()
       .then((orderData: TOrder) => {
-        console.log('Заказ успешно оформлен:', orderData);
         dispatch(setOrderModalData(orderData));
       })
       .catch((error: unknown) => {

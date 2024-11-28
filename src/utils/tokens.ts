@@ -6,27 +6,27 @@ import { deleteCookie, setCookie, getCookie } from './cookie';
  * @param accessToken - Токен доступа.
  */
 export const storeTokens = (refreshToken: string, accessToken: string) => {
-  console.log('Сохранение токенов...');
+  console.log('tokens Сохранение токенов...'); // Логируем сообщение о начале сохранения токенов
 
   // Сохраняем токен обновления в localStorage
-  localStorage.setItem('refreshToken', String(refreshToken));
+  localStorage.setItem('refreshToken', String(refreshToken)); // Преобразуем refreshToken в строку и сохраняем его в localStorage
 
   // Сохраняем токен доступа в cookie
-  setCookie('accessToken', String(accessToken));
+  setCookie('accessToken', String(accessToken)); // Преобразуем accessToken в строку и сохраняем его в cookie
 
-  console.log('Токены успешно сохранены.');
+  console.log('tokens Токены успешно сохранены.'); // Логируем сообщение об успешном сохранении токенов
 };
 
 export const clearTokens = () => {
-  console.log('Очистка токенов...');
+  console.log('Очистка токенов...'); // Логируем сообщение о начале очистки токенов
 
   // Удаляем токен обновления из localStorage
-  localStorage.removeItem('refreshToken');
+  localStorage.removeItem('refreshToken'); // Удаляем refreshToken из localStorage
 
   // Удаляем токен доступа из cookie
-  deleteCookie('accessToken');
+  deleteCookie('accessToken'); // Удаляем accessToken из cookie
 
-  console.log('Токены успешно очищены.');
+  console.log('tokens Токены успешно очищены.'); // Логируем сообщение об успешной очистке токенов
 };
 
 /**
@@ -34,14 +34,14 @@ export const clearTokens = () => {
  * @returns Токен обновления или null, если он не найден.
  */
 export const getRefreshToken = (): string | null =>
-  localStorage.getItem('refreshToken');
+  localStorage.getItem('refreshToken'); // Возвращаем refreshToken из localStorage или null, если он не найден
 
 /**
  * Получает токен доступа из cookie.
  * @returns Токен доступа или null, если он не найден.
  */
 export const getAccessToken = (): string | null =>
-  getCookie('accessToken') || null; // Используем getCookie для получения токена
+  getCookie('accessToken') || null; // Используем getCookie для получения accessToken из cookie, возвращаем null, если он не найден
 
 /**
  * Проверяет, истек ли токен доступа.
@@ -50,10 +50,10 @@ export const getAccessToken = (): string | null =>
  */
 export const isAccessTokenExpired = (token: string): boolean => {
   try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    return payload.exp < Date.now() / 1000;
+    const payload = JSON.parse(atob(token.split('.')[1])); // Декодируем и парсим полезную нагрузку токена
+    return payload.exp < Date.now() / 1000; // Проверяем, истек ли срок действия токена
   } catch (error) {
-    console.error('Ошибка при проверке срока действия токена:', error);
+    console.error('tokens Ошибка при проверке срока действия токена:', error); // Логируем ошибку, если произошла ошибка при проверке
     return true; // Если произошла ошибка, считаем токен истекшим
   }
 };
@@ -68,12 +68,12 @@ export const updateTokens = (
   newRefreshToken: string,
   newAccessToken: string
 ) => {
-  console.log('Обновление токенов...');
+  console.log('tokens Обновление токенов...'); // Логируем сообщение о начале обновления токенов
 
   clearTokens(); // Сначала очищаем старые токены
   storeTokens(newRefreshToken, newAccessToken); // Сохраняем новые токены
 
-  console.log('Токены успешно обновлены.');
+  console.log('Токены успешно обновлены.'); // Логируем сообщение об успешном обновлении токенов
 };
 
 /**
@@ -81,16 +81,16 @@ export const updateTokens = (
  * @returns Объект с состоянием токенов.
  */
 export const checkTokenStatus = () => {
-  const accessToken = getAccessToken();
-  const refreshToken = getRefreshToken();
+  const accessToken = getAccessToken(); // Получаем текущий токен доступа
+  const refreshToken = getRefreshToken(); // Получаем текущий токен обновления
 
-  const isAccessTokenValid = accessToken && !isAccessTokenExpired(accessToken);
-  const isRefreshTokenValid = !!refreshToken;
+  const isAccessTokenValid = accessToken && !isAccessTokenExpired(accessToken); // Проверяем действительность токена доступа
+  const isRefreshTokenValid = !!refreshToken; // Проверяем наличие токена обновления
 
   return {
-    isAccessTokenValid,
-    isRefreshTokenValid,
-    accessToken,
-    refreshToken
+    isAccessTokenValid, // Возвращаем результат проверки действительности токена доступа
+    isRefreshTokenValid, // Возвращаем результат проверки наличия токена обновления
+    accessToken, // Возвращаем сам токен доступа
+    refreshToken // Возвращаем сам токен обновления
   };
 };

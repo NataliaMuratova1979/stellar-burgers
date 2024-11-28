@@ -136,7 +136,6 @@ export const logout = createAsyncThunk(
       // Если ответ не успешен, возвращаем ошибку с помощью rejectWithValue
       return rejectWithValue(response);
     }
-
     // Очистка токенов из локального хранилища или куки после успешного выхода
     clearTokens();
   }
