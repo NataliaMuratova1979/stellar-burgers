@@ -15,7 +15,7 @@ export const Register: FC = () => {
   const [errorMessage, setErrorMessage] = useState('');
 
   // Получаем состояние загрузки и ошибки из Redux
-  const { loading } = useSelector((state: RootState) => state.user);
+  // const { loading } = useSelector((state: RootState) => state.user);
 
   // Обработчик отправки формы
   const handleSubmit = async (e: SyntheticEvent) => {

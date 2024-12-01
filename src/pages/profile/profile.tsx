@@ -10,10 +10,10 @@ export const Profile: FC = () => {
   const { data: user } = useSelector((store: RootState) => store.user);
   const dispatch = useDispatch(); // Получаем функцию dispatch для отправки действий
 
-  // Создаем состояние для значений формы с начальным значением из данных пользователя
+  // Устанавливаем начальное состояние формы с учетом возможного null
   const [formValue, setFormValue] = useState({
-    name: user.name,
-    email: user.email,
+    name: user?.name || '', // Используем оператор опциональной цепочки
+    email: user?.email || '',
     password: ''
   });
 
@@ -46,11 +46,22 @@ export const Profile: FC = () => {
   const handleCancel = (e: SyntheticEvent) => {
     e.preventDefault(); // Предотвращаем стандартное поведение
     console.log('Form reset to initial values'); // Логируем сброс формы
-    setFormValue({
-      name: user.name,
-      email: user.email,
-      password: '' // Сбрасываем пароль в пустую строку
-    });
+
+    // Проверяем, существует ли user
+    if (user) {
+      setFormValue({
+        name: user.name,
+        email: user.email,
+        password: '' // Сбрасываем пароль в пустую строку
+      });
+    } else {
+      // Если user равен null, можно установить значения по умолчанию
+      setFormValue({
+        name: '',
+        email: '',
+        password: ''
+      });
+    }
   };
 
   // Обработчик изменения значений в полях ввода формы

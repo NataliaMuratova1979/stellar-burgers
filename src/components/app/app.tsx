@@ -19,6 +19,8 @@ import {
   NotFound404
 } from '@pages';
 
+import { clearTokens } from '../../utils/tokens';
+
 /* импортируем модалки */
 // import { Modal } from '../modal';
 // import { OrderInfo } from '../order-info';
@@ -38,6 +40,10 @@ import { fetchIngredients } from '../../services/ingredientsSlice';
 import { RootState, useDispatch, useSelector } from '../../services/store';
 import { Preloader } from '@ui';
 
+import { checkUserAuth } from '../../services/userSlice';
+
+import { OnlyAuth, OnlyUnAuth } from '../../services/protected-route';
+
 const App: React.FC = () => {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -49,10 +55,10 @@ const App: React.FC = () => {
   const { ingredients, loading, error } = useSelector(
     (state: RootState) => state.ingredients
   );
-
+  /**
   const isAuthenticated = useSelector(
     (state: RootState) => state.user.isAuthenticated
-  ); // Проверяем, залогинен ли пользователь
+  ); // Проверяем, залогинен ли пользователь */
 
   // Локальное состояние для управления открытием/закрытием модального окна
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -73,6 +79,13 @@ const App: React.FC = () => {
   useEffect(() => {
     console.log('Fetching ingredients');
     dispatch(fetchIngredients());
+    // Очистка токенов при загрузке приложения
+    //clearTokens();
+  }, [dispatch]);
+
+  // Диспетчеризация проверки аутентификации при монтировании компонента
+  useEffect(() => {
+    dispatch(checkUserAuth());
   }, [dispatch]);
 
   return (
@@ -91,19 +104,28 @@ const App: React.FC = () => {
             <Route path='/feed' element={<Feed />} />
             <Route path='/feedinfo' element={<FeedInfo />} />
             <Route path='/feed/:number' element={<OrderInfo />} />
-            <Route path='/login' element={<Login />} /> /** защитить от доступа
-            авторизованного пользователя */
             <Route path='/register' element={<Register />} />
             <Route path='/forgot-password' element={<ForgotPassword />} />
             <Route path='/reset-password' element={<ResetPassword />} />
-            <Route path='/profile' element={<Profile />} /> /** защитить от
-            доступа неавторизованного пользователя */
-            <Route path='/profile/orders' element={<ProfileOrders />} />
-            <Route path='/profile/orders/:number' element={<OrderInfo />} />
+            <Route
+              path='/profile'
+              element={<OnlyAuth component={<Profile />} />}
+            />
+            <Route
+              path='/profile/orders'
+              element={<OnlyAuth component={<ProfileOrders />} />}
+            />
+            <Route
+              path='/profile/orders/:number'
+              element={<OnlyAuth component={<OrderInfo />} />}
+            />
+            <Route
+              path='/login'
+              element={<OnlyUnAuth component={<Login />} />}
+            />
             <Route path='/*' element={<NotFound404 />} />
             <Route path='/ingredients/:id' element={<IngredientDetails />} />
           </Routes>
-
           {/* Если есть фоновое местоположение, отображаем модальное окно с деталями ингредиента */}
           {backgroundLocation && (
             <Routes>
