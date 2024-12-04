@@ -17,6 +17,9 @@ export const Profile: FC = () => {
     password: ''
   });
 
+  // Состояние для хранения начальных значений пользователя
+  const [initialValues, setInitialValues] = useState(formValue);
+
   // Эффект для обновления состояния формы при изменении данных пользователя
   useEffect(() => {
     console.log('User data updated:', user); // Логируем обновленные данные пользователя
@@ -47,21 +50,8 @@ export const Profile: FC = () => {
     e.preventDefault(); // Предотвращаем стандартное поведение
     console.log('Form reset to initial values'); // Логируем сброс формы
 
-    // Проверяем, существует ли user
-    if (user) {
-      setFormValue({
-        name: user.name,
-        email: user.email,
-        password: '' // Сбрасываем пароль в пустую строку
-      });
-    } else {
-      // Если user равен null, можно установить значения по умолчанию
-      setFormValue({
-        name: '',
-        email: '',
-        password: ''
-      });
-    }
+    // Сбрасываем форму к начальным значениям
+    setFormValue(initialValues);
   };
 
   // Обработчик изменения значений в полях ввода формы

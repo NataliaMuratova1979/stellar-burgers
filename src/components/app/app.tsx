@@ -104,9 +104,6 @@ const App: React.FC = () => {
             <Route path='/feed' element={<Feed />} />
             <Route path='/feedinfo' element={<FeedInfo />} />
             <Route path='/feed/:number' element={<OrderInfo />} />
-            <Route path='/register' element={<Register />} />
-            <Route path='/forgot-password' element={<ForgotPassword />} />
-            <Route path='/reset-password' element={<ResetPassword />} />
             <Route
               path='/profile'
               element={<OnlyAuth component={<Profile />} />}
@@ -122,6 +119,18 @@ const App: React.FC = () => {
             <Route
               path='/login'
               element={<OnlyUnAuth component={<Login />} />}
+            />
+            <Route
+              path='/register'
+              element={<OnlyUnAuth component={<Register />} />}
+            />
+            <Route
+              path='/reset-password'
+              element={<OnlyUnAuth component={<ForgotPassword />} />}
+            />
+            <Route
+              path='/forgot-password'
+              element={<OnlyUnAuth component={<ResetPassword />} />}
             />
             <Route path='/*' element={<NotFound404 />} />
             <Route path='/ingredients/:id' element={<IngredientDetails />} />

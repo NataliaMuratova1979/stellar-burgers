@@ -38,7 +38,7 @@ const Protected = ({
   }
 
   if (onlyUnAuth && user) {
-    // Для неавторизованного и авторизован
+    // Для неавторизованного, но авторизован
     const { from } = location.state ?? { from: { pathname: '/' } };
     console.log(
       'Protected Пользователь аутентифицирован. Перенаправляем на:',
