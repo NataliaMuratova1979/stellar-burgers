@@ -2,7 +2,8 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  useLocation
+  useLocation,
+  useNavigate
 } from 'react-router-dom';
 
 import { useEffect, useState } from 'react';
@@ -20,11 +21,6 @@ import {
 } from '@pages';
 
 import { clearTokens } from '../../utils/tokens';
-
-/* импортируем модалки */
-// import { Modal } from '../modal';
-// import { OrderInfo } from '../order-info';
-// import { IngredientDetails } from '../ingredient-details';
 
 import {
   AppHeader,
@@ -47,18 +43,17 @@ import { OnlyAuth, OnlyUnAuth } from '../../services/protected-route';
 const App: React.FC = () => {
   const dispatch = useDispatch();
   const location = useLocation();
+  console.log('location', location);
+  const navigate = useNavigate();
 
   // Определяем фоновое местоположение для модалей
-  const backgroundLocation = location.state?.backgroundLocation;
+  //const backgroundLocation = location.state?.backgroundLocation;
+  const state = location.state as { background?: Location };
 
   // Получаем состояние ингредиентов из Redux
   const { ingredients, loading, error } = useSelector(
     (state: RootState) => state.ingredients
   );
-  /**
-  const isAuthenticated = useSelector(
-    (state: RootState) => state.user.isAuthenticated
-  ); // Проверяем, залогинен ли пользователь */
 
   // Локальное состояние для управления открытием/закрытием модального окна
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -79,8 +74,6 @@ const App: React.FC = () => {
   useEffect(() => {
     console.log('Fetching ingredients');
     dispatch(fetchIngredients());
-    // Очистка токенов при загрузке приложения
-    //clearTokens();
   }, [dispatch]);
 
   // Диспетчеризация проверки аутентификации при монтировании компонента
@@ -99,7 +92,7 @@ const App: React.FC = () => {
         <p>Ошибка: {error}</p>
       ) : ingredients.length > 0 ? (
         <>
-          <Routes location={backgroundLocation || location}>
+          <Routes location={state?.background || location}>
             <Route path='/' element={<ConstructorPage />} />
             <Route path='/feed' element={<Feed />} />
             <Route path='/feedinfo' element={<FeedInfo />} />
@@ -136,13 +129,32 @@ const App: React.FC = () => {
             <Route path='/ingredients/:id' element={<IngredientDetails />} />
           </Routes>
           {/* Если есть фоновое местоположение, отображаем модальное окно с деталями ингредиента */}
-          {backgroundLocation && (
+          {state?.background && (
             <Routes>
               <Route
                 path='/ingredients/:id'
                 element={
-                  <Modal title='Детали ингрeдиента' onClose={handleCloseModal}>
+                  <Modal
+                    title='Детали ингредиента'
+                    onClose={() => navigate(-1)}
+                  >
                     <IngredientDetails />
+                  </Modal>
+                }
+              />
+              <Route
+                path='/feed/:id'
+                element={
+                  <Modal title='' onClose={() => navigate(-1)}>
+                    <OrderInfo />
+                  </Modal>
+                }
+              />
+              <Route
+                path='/profile/orders/:id'
+                element={
+                  <Modal title='' onClose={() => navigate(-1)}>
+                    <OrderInfo />
                   </Modal>
                 }
               />
@@ -150,8 +162,7 @@ const App: React.FC = () => {
           )}
         </>
       ) : (
-        // Если нет ингредиентов, отображаем соответствующее сообщение
-        <p>Нет ингредиентов</p>
+        <p>No ingredients available</p>
       )}
     </div>
   );
