@@ -3,7 +3,8 @@ import {
   Routes,
   Route,
   useLocation,
-  useNavigate
+  useNavigate,
+  useParams
 } from 'react-router-dom';
 
 import { useEffect, useState } from 'react';
@@ -28,7 +29,8 @@ import {
   Modal,
   FeedInfo,
   OrderInfo,
-  OrdersList
+  OrdersList,
+  OrderCard
 } from '@components';
 import '../../index.css';
 import styles from './app.module.css';
@@ -142,18 +144,26 @@ const App: React.FC = () => {
                   </Modal>
                 }
               />
+            </Routes>
+          )}
+          {state?.background && (
+            <Routes>
               <Route
-                path='/feed/:id'
+                path='feed/:number'
                 element={
-                  <Modal title='' onClose={() => navigate(-1)}>
+                  <Modal title='Детали заказа' onClose={() => navigate(-1)}>
                     <OrderInfo />
                   </Modal>
                 }
               />
+            </Routes>
+          )}
+          {state?.background && (
+            <Routes>
               <Route
-                path='/profile/orders/:id'
+                path='profile/orders/:id'
                 element={
-                  <Modal title='' onClose={() => navigate(-1)}>
+                  <Modal title='Детали заказа' onClose={() => navigate(-1)}>
                     <OrderInfo />
                   </Modal>
                 }
