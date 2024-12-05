@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { FC, useMemo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { TConstructorIngredient, TOrder } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
@@ -8,12 +8,15 @@ import {
   setOrderModalData,
   placeOrder
 } from '../../services/burgerSlice';
-import { checkTokenStatus } from '../../utils/tokens'; // Импортируйте функцию проверки токенов
+import { checkUserAuth } from '../../services/userSlice'; // Импортируйте checkUserAuth
 
 import { RootState, AppDispatch } from '../../services/store';
 import { useNavigate } from 'react-router-dom';
 
 export const BurgerConstructor: FC = () => {
+  const dispatch: AppDispatch = useDispatch();
+  const navigate = useNavigate();
+
   const constructorItems = useSelector(
     (state: RootState) => state.burger.constructorItems
   );
@@ -23,14 +26,23 @@ export const BurgerConstructor: FC = () => {
   const orderModalData = useSelector(
     (state: RootState) => state.burger.orderModalData
   );
+  const isAuthChecked = useSelector(
+    (state: RootState) => state.user.isAuthChecked
+  );
 
-  const dispatch: AppDispatch = useDispatch();
-  const navigate = useNavigate();
+  // Проверяем аутентификацию при монтировании компонента
+  useEffect(() => {
+    dispatch(checkUserAuth());
+  }, [dispatch]);
 
   const onOrderClick = () => {
-    const { isAccessTokenValid, isRefreshTokenValid } = checkTokenStatus();
+    if (!isAuthChecked) {
+      console.log('Аутентификация не проверена. Ожидание...');
+      return; // Если аутентификация еще не проверена, выходим из функции
+    }
 
-    if (!isAccessTokenValid) {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
       console.log(
         'Токен доступа недействителен. Перенаправление на страницу входа.'
       );
