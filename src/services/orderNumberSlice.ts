@@ -60,7 +60,7 @@ const orderNumberSlice = createSlice({
   }
 });
 
-// Экспортируйте редюсер и действия
+// Экспорт редюсера и действия
 export default orderNumberSlice.reducer;
 
 // Селектор для получения заказа по номеру

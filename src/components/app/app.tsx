@@ -161,7 +161,7 @@ const App: React.FC = () => {
           {state?.background && (
             <Routes>
               <Route
-                path='profile/orders/:id'
+                path='profile/orders/:number'
                 element={
                   <Modal title='Детали заказа' onClose={() => navigate(-1)}>
                     <OrderInfo />

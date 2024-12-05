@@ -17,16 +17,19 @@ export const OrderInfo: FC = () => {
 
   // Приводим номер заказа к числу
   const orderNumber = Number(number);
+  console.log('Order number from URL:', orderNumber);
 
   // Используем селектор для получения данных о заказе
   const orderData = useSelector((state: RootState) =>
     selectOrderNumberData(state, orderNumber)
   );
+  console.log('Fetched order data:', orderData);
 
   // Получаем список ингредиентов из состояния
   const ingredients = useSelector(
     (state: RootState) => state.ingredients.ingredients
   );
+  console.log('Ingredients from state:', ingredients);
 
   // Эффект для загрузки данных о заказе при первом рендере
   useEffect(() => {
@@ -79,6 +82,8 @@ export const OrderInfo: FC = () => {
   if (!orderInfo) {
     return <Preloader />;
   }
+
+  console.log('Rendering OrderInfoUI with order info:', orderInfo);
 
   return <OrderInfoUI orderInfo={orderInfo} />;
 };
