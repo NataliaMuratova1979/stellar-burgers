@@ -67,10 +67,10 @@ const App: React.FC = () => {
   };
 
   // Функция для закрытия модального окна
-  const handleCloseModal = () => {
-    console.log('Closing modal');
-    setIsModalOpen(false);
-  };
+  //const handleCloseModal = () => {
+  // console.log('Closing modal');
+  // setIsModalOpen(false);
+  ///  };
 
   // Эффект для загрузки ингредиентов при монтировании компонента
   useEffect(() => {
