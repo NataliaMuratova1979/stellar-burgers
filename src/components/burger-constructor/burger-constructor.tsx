@@ -8,7 +8,11 @@ import {
   setOrderModalData,
   placeOrder
 } from '../../services/burgerSlice';
-import { checkUserAuth } from '../../services/userSlice'; // Импортируйте checkUserAuth
+import {
+  checkUserAuth,
+  getIsAuthChecked,
+  getUser
+} from '../../services/userSlice';
 
 import { RootState, AppDispatch } from '../../services/store';
 import { useNavigate } from 'react-router-dom';
@@ -26,35 +30,31 @@ export const BurgerConstructor: FC = () => {
   const orderModalData = useSelector(
     (state: RootState) => state.burger.orderModalData
   );
-  const isAuthChecked = useSelector(
-    (state: RootState) => state.user.isAuthChecked
-  );
+  const isAuthChecked = useSelector(getIsAuthChecked);
+  const user = useSelector(getUser); // Получаем информацию о пользователе
 
-  // Проверяем аутентификацию при монтировании компонента
   useEffect(() => {
+    console.log('Проверка авторизации пользователя...');
     dispatch(checkUserAuth());
   }, [dispatch]);
 
   const onOrderClick = () => {
+    console.log('Кнопка "Оформить заказ" нажата.');
+
     if (!isAuthChecked) {
-      console.log('Аутентификация не проверена. Ожидание...');
+      console.log('Аутентификация еще не проверена. Выход из функции.');
       return; // Если аутентификация еще не проверена, выходим из функции
     }
 
-    const token = localStorage.getItem('accessToken');
-    if (!token) {
-      console.log(
-        'Токен доступа недействителен. Перенаправление на страницу входа.'
-      );
+    if (!user) {
+      console.log('Пользователь не авторизован. Перенаправление на /login');
       navigate('/login');
       return;
     }
 
     if (!constructorItems.bun || orderRequest) {
-      console.log(
-        'Нет булки или запрос уже отправлен. Отмена оформления заказа.'
-      );
-      return;
+      console.log('Нет булки или запрос уже отправлен. Выход из функции.');
+      return; // Если нет булки или запрос уже отправлен, выходим из функции
     }
 
     const ingredientIds: string[] = [
@@ -74,6 +74,7 @@ export const BurgerConstructor: FC = () => {
     dispatch(placeOrder(ingredientIds))
       .unwrap()
       .then((orderData: TOrder) => {
+        console.log('Заказ успешно оформлен:', orderData);
         dispatch(setOrderModalData(orderData));
       })
       .catch((error: unknown) => {
@@ -98,6 +99,7 @@ export const BurgerConstructor: FC = () => {
         (s: number, v: TConstructorIngredient) => s + v.price,
         0
       );
+    console.log('Расчет цены заказа:', calculatedPrice);
     return calculatedPrice;
   }, [constructorItems]);
 

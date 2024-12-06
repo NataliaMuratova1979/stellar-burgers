@@ -116,6 +116,12 @@ export const loginUser = createAsyncThunk<TUser, TLoginData>(
     const { user, refreshToken, accessToken } = response;
     console.log('Успешный вход. Полученные данные пользователя:', user); // Логируем данные пользователя
     // Сохранение токенов в локальное хранилище или куки
+
+    // Логируем токены
+    console.log('Полученные токены:');
+    console.log('Refresh Token:', refreshToken);
+    console.log('Access Token:', accessToken);
+
     storeTokens(refreshToken, accessToken);
 
     // Возвращаем объект пользователя для дальнейшего использования в редюсере
