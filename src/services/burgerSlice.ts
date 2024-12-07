@@ -180,3 +180,12 @@ export const selectTotalIngredientsCount = createSelector(
 
 // Селектор для получения состояния заказа
 export const selectOrderError = (state: RootState) => state.burger.orderError;
+
+// Селектор для получения объекта заказа
+export const selectBurgerConstructor = (state: RootState) => {
+  const { bun, ingredients } = state.burger.constructorItems;
+  return {
+    bun: bun ? bun._id : null, // Если булка выбрана, возвращаем ее ID как строку, иначе null
+    ingredients: ingredients.map((ingredient) => ingredient._id) // Возвращаем массив ID ингредиентов
+  };
+};
