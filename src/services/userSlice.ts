@@ -8,7 +8,7 @@ import {
 import { TUser } from '@utils-types';
 import { RootState } from './store';
 import { createSelector } from '@reduxjs/toolkit';
-import { clearTokens, storeTokens } from '../utils/tokens';
+import { clearTokens, storeTokens, getAccessToken } from '../utils/tokens';
 import { getCookie } from '../utils/cookie';
 
 import {
@@ -275,23 +275,6 @@ export const selectUser = (state: RootState) => state.user;
 // Селектор для получения данных пользователя
 export const selectUserData = createSelector(selectUser, (user) => user.data);
 
-// Селектор для получения состояния загрузки
-/**
-export const selectIsLoading = createSelector(
-  selectUser,
-  (user) => user.loading
-); */
-
-// Селектор для получения ошибки
-//export const selectError = createSelector(selectUser, (user) => user.error);
-
-// Селектор для проверки аутентификации пользователя
-/**
-export const selectIsAuthenticated = createSelector(
-  selectUser,
-  (user) => user.isAuthenticated
-); */
-
 // Экспортируем редюсер по умолчанию для использования в хранилище Redux
 export default userSlice.reducer;
 
@@ -300,6 +283,7 @@ export const selectUserName = (state: RootState) =>
   state.user.data ? state.user.data.name : null;
 
 // Селектор для проверки аутентификации, извлекая токен из хранилища и выполняя запрос для получения данных пользователя
+/**
 export const checkUserAuth = createAsyncThunk(
   'auth/checkUserAuth',
   async (_, { dispatch }) => {
@@ -330,6 +314,42 @@ export const checkUserAuth = createAsyncThunk(
     }
 
     dispatch(setIsAuthChecked(true));
+    console.log('checkUserAuth Проверка аутентификации завершена.');
+  }
+);
+*/
+
+// Селектор для проверки аутентификации, извлекая токен из cookie и выполняя запрос для получения данных пользователя
+export const checkUserAuth = createAsyncThunk(
+  'auth/checkUserAuth',
+  async (_, { dispatch }) => {
+    const token = getAccessToken(); // Получаем токен из cookie
+    console.log('checkUserAuth Токен доступа:', token);
+
+    if (token) {
+      console.log(
+        'checkUserAuth Токен найден. Выполняется запрос к API для получения данных пользователя...'
+      );
+      try {
+        const response = await getUserApi(); // Выполняем запрос к API
+        console.log('checkUserAuth Данные пользователя получены:', response);
+
+        // Диспатчим действие для установки пользователя в состояние
+        dispatch(setUser(response.user));
+      } catch (error) {
+        console.error(
+          'checkUserAuth Не удалось получить данные пользователя:',
+          error
+        );
+        // Можно также диспатчить действие для обработки ошибок
+      }
+    } else {
+      console.log(
+        'checkUserAuth Токен не найден. Пользователь не аутентифицирован.'
+      );
+    }
+
+    dispatch(setIsAuthChecked(true)); // Устанавливаем флаг проверки аутентификации
     console.log('checkUserAuth Проверка аутентификации завершена.');
   }
 );

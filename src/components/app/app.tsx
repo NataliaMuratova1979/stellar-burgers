@@ -45,7 +45,6 @@ import { OnlyAuth, OnlyUnAuth } from '../../services/protected-route';
 const App: React.FC = () => {
   const dispatch = useDispatch();
   const location = useLocation();
-  console.log('location', location);
   const navigate = useNavigate();
 
   // Определяем фоновое местоположение для модалей
@@ -57,29 +56,14 @@ const App: React.FC = () => {
     (state: RootState) => state.ingredients
   );
 
-  // Локальное состояние для управления открытием/закрытием модального окна
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // Функция для открытия модального окна
-  const handleOpenModal = () => {
-    console.log('Opening modal');
-    setIsModalOpen(true);
-  };
-
-  // Функция для закрытия модального окна
-  //const handleCloseModal = () => {
-  // console.log('Closing modal');
-  // setIsModalOpen(false);
-  ///  };
-
   // Эффект для загрузки ингредиентов при монтировании компонента
   useEffect(() => {
-    console.log('Fetching ingredients');
-    dispatch(fetchIngredients());
-  }, [dispatch]);
+    console.log('Fetching ingredients and checking user authentication');
 
-  // Диспетчеризация проверки аутентификации при монтировании компонента
-  useEffect(() => {
+    // Диспетчеризация загрузки ингредиентов
+    dispatch(fetchIngredients());
+
+    // Диспетчеризация проверки аутентификации
     dispatch(checkUserAuth());
   }, [dispatch]);
 

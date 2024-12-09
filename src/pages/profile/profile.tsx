@@ -3,16 +3,18 @@ import { useDispatch, useSelector } from '../../services/store'; // Импорт
 import { ProfileUI } from '@ui-pages'; // Импортируем компонент пользовательского интерфейса профиля
 import { FC, SyntheticEvent, useEffect, useState } from 'react'; // Импортируем необходимые хуки и типы из React
 import { RootState } from 'src/services/store'; // Импортируем тип корневого состояния Redux
+import { getUser } from '../../services/userSlice'; // Импортируем селектор getUser
 
 // Определяем функциональный компонент Profile
 export const Profile: FC = () => {
-  // Получаем данные пользователя из Redux-хранилища
-  const { data: user } = useSelector((store: RootState) => store.user);
+  // Получаем данные пользователя из Redux-хранилища с помощью селектора getUser
+  const user = useSelector((state: RootState) => getUser(state));
+
   const dispatch = useDispatch(); // Получаем функцию dispatch для отправки действий
 
   // Устанавливаем начальное состояние формы с учетом возможного null
   const [formValue, setFormValue] = useState({
-    name: user?.name || '', // Используем оператор опциональной цепочки
+    name: user?.name || '',
     email: user?.email || '',
     password: ''
   });
