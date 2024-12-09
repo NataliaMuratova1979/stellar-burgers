@@ -3,11 +3,10 @@ import {
   Routes,
   Route,
   useLocation,
-  useNavigate,
-  useParams
+  useNavigate
 } from 'react-router-dom';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import {
   ConstructorPage,
@@ -21,16 +20,12 @@ import {
   NotFound404
 } from '@pages';
 
-import { clearTokens } from '../../utils/tokens';
-
 import {
   AppHeader,
   IngredientDetails,
   Modal,
   FeedInfo,
-  OrderInfo,
-  OrdersList,
-  OrderCard
+  OrderInfo
 } from '@components';
 import '../../index.css';
 import styles from './app.module.css';

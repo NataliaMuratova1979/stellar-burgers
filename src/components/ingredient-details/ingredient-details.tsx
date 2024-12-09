@@ -12,7 +12,6 @@ import { TIngredient } from '@utils-types';
  */
 
 export const IngredientDetails: FC = () => {
-  /** TODO: взять переменную из стора */
   const { id } = useParams<{ id: string }>(); // Получаем id из параметров маршрута
 
   const ingredients = useSelector(

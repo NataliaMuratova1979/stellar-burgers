@@ -39,7 +39,7 @@ export const authSlice = createSlice({
   },
   selectors: {
     getIsAuthChecked: (state: TUserState): boolean => state.isAuthChecked,
-    getUser: (state: TUserState): TUser | null => state.user,
+    getUser: (state: TUserState): TUser | null => state.user
   }
 });
 
