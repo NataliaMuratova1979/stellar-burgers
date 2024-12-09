@@ -1,14 +1,32 @@
 import { FC, memo } from 'react';
 import { BurgerConstructorElementUI } from '@ui';
 import { BurgerConstructorElementProps } from './type';
+import { useDispatch } from 'react-redux';
+import {
+  moveIngredientUp,
+  moveIngredientDown,
+  removeIngredient
+} from '../../services/burgerSlice';
 
 export const BurgerConstructorElement: FC<BurgerConstructorElementProps> = memo(
   ({ ingredient, index, totalItems }) => {
-    const handleMoveDown = () => {};
+    const dispatch = useDispatch();
 
-    const handleMoveUp = () => {};
+    const handleMoveDown = () => {
+      console.log('Попытка переместить ингредиент вниз: ${ingredient.id}');
+      dispatch(moveIngredientDown(ingredient.id));
+    };
 
-    const handleClose = () => {};
+    const handleMoveUp = () => {
+      console.log('Попытка переместить ингредиент вверх: ${ingredient.id}');
+      dispatch(moveIngredientUp(ingredient.id));
+    };
+
+    const handleClose = () => {
+      //  Логика для удаления ингредиента из конструктора
+      dispatch(removeIngredient(ingredient.id));
+      console.log('Удаление ингредиента: ${ingredient.id}');
+    };
 
     return (
       <BurgerConstructorElementUI
