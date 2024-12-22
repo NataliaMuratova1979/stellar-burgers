@@ -12,13 +12,11 @@ import orderNumberReducer from './orderNumberSlice'; // Импортируем �
 
 const rootReducer = combineReducers({
   ingredients: ingredientsReducer,
-  //constructor: constructorReducer,
   burger: burgerReducer,
   orders: ordersReducer,
   user: userReducer,
   usersOrders: usersOrdersReducer,
   orderNumber: orderNumberReducer
-  //token: authSlice
 });
 
 export default rootReducer;

@@ -31,30 +31,24 @@ export const BurgerConstructor: FC = () => {
     (state: RootState) => state.burger.orderModalData
   );
   const isAuthChecked = useSelector(getIsAuthChecked);
-  const user = useSelector(getUser); // Получаем информацию о пользователе
+  const user = useSelector(getUser);
 
   useEffect(() => {
-    console.log('Проверка авторизации пользователя...');
     dispatch(checkUserAuth());
   }, [dispatch]);
 
   const onOrderClick = () => {
-    console.log('Кнопка "Оформить заказ" нажата.');
-
     if (!isAuthChecked) {
-      console.log('Аутентификация еще не проверена. Выход из функции.');
-      return; // Если аутентификация еще не проверена, выходим из функции
+      return;
     }
 
     if (!user) {
-      console.log('Пользователь не авторизован. Перенаправление на /login');
       navigate('/login');
       return;
     }
 
     if (!constructorItems.bun || orderRequest) {
-      console.log('Нет булки или запрос уже отправлен. Выход из функции.');
-      return; // Если нет булки или запрос уже отправлен, выходим из функции
+      return;
     }
 
     const ingredientIds: string[] = [
@@ -64,30 +58,22 @@ export const BurgerConstructor: FC = () => {
       )
     ];
 
-    console.log(
-      'Отправка запроса на оформление заказа с ингредиентами:',
-      ingredientIds
-    );
-
     dispatch(setOrderRequest(true));
 
     dispatch(placeOrder(ingredientIds))
       .unwrap()
       .then((orderData: TOrder) => {
-        console.log('Заказ успешно оформлен:', orderData);
         dispatch(setOrderModalData(orderData));
       })
       .catch((error: unknown) => {
         console.error('Ошибка при оформлении заказа:', error);
       })
       .finally(() => {
-        console.log('Запрос на оформление заказа завершен.');
         dispatch(setOrderRequest(false));
       });
   };
 
   const closeOrderModal = () => {
-    console.log('Закрытие модального окна заказа.');
     dispatch(clearConstructor());
     dispatch(setOrderModalData(null));
   };
@@ -99,7 +85,6 @@ export const BurgerConstructor: FC = () => {
         (s: number, v: TConstructorIngredient) => s + v.price,
         0
       );
-    console.log('Расчет цены заказа:', calculatedPrice);
     return calculatedPrice;
   }, [constructorItems]);
 
