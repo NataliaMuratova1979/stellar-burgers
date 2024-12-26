@@ -9,14 +9,20 @@ describe('Тестирование конструктора', () => {
       'getUser'
     );
 
+    // Устанавливаем фальшивые токены перед каждым тестом
+    cy.window().then((win) => {
+      win.localStorage.setItem('refreshToken', 'fakeRefreshToken'); // Устанавливаем фейковый refreshToken
+    });
+    cy.setCookie('accessToken', 'fakeAccessToken');
+
     // Посещаем главную страницу
     cy.visit('/');
 
     // Ждем завершения запроса
     cy.wait('@getIngredients');
   });
-  //КОД НИЖЕ РАБОТАЕТ, НЕ ТРОГАТЬ
-  /* 
+  //КОД НИЖЕ РАБОТАЕТ, НЕ ТРОГАТЬ Добавление ингредиента из списка в конструктор
+
   describe('Протестировано добавление ингредиента из списка в конструктор', () => {
     // Универсальная функция для тестирования добавления ингредиента
     function testIngredient(chooseText, ingredientName) {
@@ -49,8 +55,9 @@ describe('Тестирование конструктора', () => {
 
     // Вы можете добавлять дополнительные ингредиенты аналогичным образом
     testIngredient('Выберите начинку', 'Соус Spicy-X');
-  }); */
-  //КОД НИЖЕ РАБОТАЕТ, НЕ ТРОГАТЬ
+  });
+
+  //КОД НИЖЕ РАБОТАЕТ, НЕ ТРОГАТЬ Тестирование модального окна ингредиента
   describe('Тестирование модального окна ингредиента', () => {
     beforeEach(() => {
       // Находим первый ингредиент и присваиваем алиас
@@ -95,10 +102,6 @@ describe('Тестирование конструктора', () => {
 
     it('Открытие модального окна при клике на ингредиент', () => {
       openModal();
-
-      // Дополнительно проверяем, что заголовок модального окна содержит ожидаемый текст
-      // Замените 'Название ингредиента' на актуальное название
-      // cy.get('.modal .title').should('contain', 'Название ингредиента');
     });
 
     it('Закрытие модального окна по клику на крестик', () => {
@@ -111,6 +114,35 @@ describe('Тестирование конструктора', () => {
       closeModalByOverlay();
     });
   });
+  //Тестирование создания заказа
+  describe('Тестирование создания заказа', () => {
+    it('Оформление заказа', () => {
+      cy.intercept('POST', '/api/orders', { fixture: 'order.json' }).as(
+        'postOrder'
+      );
 
-  //КОД НИЖЕ
+      // Проверка что модальное окно не активно
+      //cy.get('[data-cy=modal]').should('not.exist');
+
+      ['Булки', 'Начинки', 'Соусы'].forEach((category) => {
+        cy.get('h3').contains(category).next('ul').contains('Добавить').click();
+      });
+
+      cy.get('[data-cy="order-button"]').click();
+
+      cy.wait('@postOrder').then((interception) => {
+        const mockOrderData = interception.response.body; // Получаем данные из ответа
+
+        // Проверяем номер заказа
+        cy.get('[data-cy="order-number"]').should(
+          'contain',
+          mockOrderData.order.number
+        );
+      });
+
+      // Проверяем, что модальное окно открылось и номер заказа верный
+      cy.get('[data-cy="modal"]').should('be.visible');
+      //cy.get('[data-cy="order-number"]').should('contain', mockOrderData.order.number);
+    });
+  });
 });

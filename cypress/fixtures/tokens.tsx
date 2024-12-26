@@ -1,6 +1,0 @@
-accessToken
-: 
-"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MzVkMzFlYjI3YjA2MDAxYzNlODFjOCIsImlhdCI6MTczNTAzMTA4MywiZXhwIjoxNzM1MDMyMjgzfQ.KSVenn807yPtvfESloZyH35DWPX-j9FR-Z63qFNbiT4"
-refreshToken
-: 
-"7c43bbb6b7de57e3898dc08aca7481f5cb6c9873d0fc5b1c0970e0bac05a684dd4a6ba0f25afd81e"

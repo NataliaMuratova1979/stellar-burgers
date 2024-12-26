@@ -128,9 +128,12 @@ type TNewOrderResponse = TServerResponse<{
   name: string;
 }>;
 
-//Функция orderBurgerApi предназначена для отправки нового заказа на сервер с использованием API.
-export const orderBurgerApi = (data: string[]) =>
-  fetchWithRefresh<TNewOrderResponse>(`${URL}/orders`, {
+// Функция orderBurgerApi предназначена для отправки нового заказа на сервер с использованием API.
+export const orderBurgerApi = (data: string[]) => {
+  // Выводим информацию о заказе в консоль
+  console.log('Отправка нового заказа на сервер с ингредиентами:', data);
+
+  return fetchWithRefresh<TNewOrderResponse>(`${URL}/orders`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json;charset=utf-8',
@@ -139,12 +142,16 @@ export const orderBurgerApi = (data: string[]) =>
     body: JSON.stringify({
       ingredients: data
     })
-  }).then((data) => {
-    if (data?.success) return data;
-    return Promise.reject(data);
+  }).then((response) => {
+    console.log('Ответ сервера:', response);
+    if (response?.success) {
+      return response;
+    }
+    return Promise.reject(response);
   });
+};
 
-//тип данных заказов, возвращаемых сервером.
+// Тип данных заказов, возвращаемых сервером.
 type TOrderResponse = TServerResponse<{
   orders: TOrder[];
 }>;
