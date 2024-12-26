@@ -142,7 +142,16 @@ describe('Тестирование конструктора', () => {
 
       // Проверяем, что модальное окно открылось и номер заказа верный
       cy.get('[data-cy="modal"]').should('be.visible');
-      //cy.get('[data-cy="order-number"]').should('contain', mockOrderData.order.number);
+
+      // Клик по кнопке закрытия модального окна
+      cy.get('[data-cy="close-button"]').click();
+
+      // Проверяем, что модальное окно закрыто
+      cy.get('[data-cy="modal"]').should('not.exist');
+
+      ['Выберите булки', 'Выберите начинку'].forEach((text) => {
+        cy.contains(text).should('exist');
+      });
     });
   });
 });
