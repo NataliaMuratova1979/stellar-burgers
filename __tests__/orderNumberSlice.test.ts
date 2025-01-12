@@ -10,7 +10,7 @@ jest.mock('../src/utils/burger-api', () => ({
   getOrderByNumberApi: jest.fn()
 }));
 
-describe('orderNumberSlice', () => {
+describe('Тестирование orderNumberSlice', () => {
   const initialState = {
     orderNumberData: null,
     loading: false,

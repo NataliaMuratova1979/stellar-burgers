@@ -1,7 +1,7 @@
 import { expect } from '@jest/globals';
 
 
-describe('Тестирование toEqual', () => {
+describe('Тестирование функции toEqual', () => {
   it('should check if two objects are equal', () => {
     const obj1 = { name: 'Alice', age: 25 };
     const obj2 = { name: 'Alice', age: 25 };

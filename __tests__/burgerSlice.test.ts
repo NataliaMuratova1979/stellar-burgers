@@ -9,7 +9,7 @@ import { TConstructorIngredient } from '../src/utils/types';
 
 import { describe, it, expect } from '@jest/globals';
 
-describe('burgerSlice reducer', () => {
+describe('Тестирование burgerSlice reducer', () => {
   const initialState = {
     constructorItems: {
       bun: null,

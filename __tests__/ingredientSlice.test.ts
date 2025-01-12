@@ -3,7 +3,7 @@ import { TIngredient } from '../src/utils/types';
 
 import { describe, it, expect } from '@jest/globals';
 
-describe('ingredientsSlice', () => {
+describe('Тестирование ingredientsSlice', () => {
   const initialState = {
     ingredients: [],
     loading: false,

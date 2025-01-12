@@ -7,7 +7,7 @@ import { TOrdersData } from '../src/utils/types';
 
 import { describe, it, expect, beforeEach } from '@jest/globals';
 
-describe('ordersSlice', () => {
+describe('Тестирование ordersSlice', () => {
   const store = configureStore({ reducer: { orders: ordersReducer } });
 
   beforeEach(() => {

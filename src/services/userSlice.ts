@@ -104,42 +104,32 @@ export const updateUser = createAsyncThunk<TUser, Partial<TRegisterData>>(
     const response = await updateUserApi(data);
 
     if (!response?.success) {
-      // Если ответ не успешен, возвращаем ошибку с помощью rejectWithValue
       return rejectWithValue(response);
     }
 
-    // Возвращаем обновленный объект пользователя для дальнейшего использования в редюсере
     return response.user;
   }
 );
 
-// Асинхронное действие для выхода пользователя
 export const logout = createAsyncThunk(
   'user/logout',
   async (_, { rejectWithValue }) => {
-    // Вызов API для выхода пользователя
     const response = await logoutApi();
 
-    // Проверка успешности ответа от API
     if (!response?.success) {
-      // Если ответ не успешен, возвращаем ошибку с помощью rejectWithValue
       return rejectWithValue(response);
     }
-    // Очистка токенов из локального хранилища или куки после успешного выхода
     clearTokens();
   }
 );
 
-// Создание слайса пользователя с помощью Redux Toolkit
 const userSlice = createSlice({
-  name: 'user', // Имя слайса
-  initialState, // Начальное состояние
+  name: 'user',
+  initialState,
   reducers: {
-    // редюсер для сброса ошибки
     resetError: (state) => {
       // state.error = null; // Сбрасываем ошибку
     },
-    // редюсер для обновления данных пользователя
     updateUserData: (state, action: PayloadAction<Partial<TUser>>) => {
       if (state.data) {
         state.data = {
@@ -150,61 +140,43 @@ const userSlice = createSlice({
         };
       }
     },
-    setIsAuthChecked: (
-      state,
-      action: PayloadAction<boolean> // Действие содержит булевое значение
-    ) => {
-      console.log('setIsAuthChecked action payload:', action.payload); // Логируем значение payload
-      state.isAuthChecked = action.payload; // Устанавливаем новое значение флага
+    setIsAuthChecked: (state, action: PayloadAction<boolean>) => {
+      state.isAuthChecked = action.payload;
     },
-    // Редьюсер для установки данных пользователя
-    setUser: (
-      state,
-      action: PayloadAction<TUser | null> // Действие содержит данные пользователя или null
-    ): void => {
-      console.log('setUser action payload:', action.payload); // Логируем значение payload
-      state.data = action.payload; // Устанавливаем данные пользователя в состояние
+    setUser: (state, action: PayloadAction<TUser | null>): void => {
+      state.data = action.payload;
     }
   },
 
   extraReducers: (builder) => {
     builder
-      // Обработка состояния при регистрации пользователя
-      .addCase(registerUser.pending, (state) => {
-        console.log('Регистрация пользователя начата...'); // Лог начала регистрации
-      })
+      .addCase(registerUser.pending, (state) => {})
       .addCase(
         registerUser.fulfilled,
         (state, action: PayloadAction<TUser>) => {
-          console.log('Регистрация пользователя успешна:', action.payload); // Лог успешной регистрации
-          state.data = action.payload; // Сохраняем данные пользователя в состоянии
+          state.data = action.payload;
         }
       )
       .addCase(registerUser.rejected, (state, action) => {
-        console.error('Ошибка при регистрации пользователя:', action.payload); // Лог ошибки регистрации
+        console.error('Ошибка при регистрации пользователя:', action.payload);
       })
-      // Обработка состояния при входе пользователя
-      .addCase(loginUser.pending, (state) => {
-        console.log('Вход пользователя начат...'); // Лог начала входа
-      })
+      .addCase(loginUser.pending, (state) => {})
       .addCase(loginUser.fulfilled, (state, action: PayloadAction<TUser>) => {
-        console.log('Вход пользователя успешен:', action.payload); // Лог успешного входа
-        state.data = action.payload; // Сохраняем данные пользователя в состоянии
+        state.data = action.payload;
         state.isAuthChecked = true;
       })
       .addCase(loginUser.rejected, (state, action) => {
-        console.error('Ошибка при входе пользователя:', action.payload); // Лог ошибки входа
+        console.error('Ошибка при входе пользователя:', action.payload);
       })
-      // Обработка состояния при выходе пользователя
       .addCase(logout.pending, (state) => {
-        console.log('Выход пользователя начат...'); // Лог начала выхода
+        console.log('Выход пользователя начат...');
       })
       .addCase(logout.fulfilled, (state) => {
-        console.log('Выход пользователя успешен'); // Лог успешного выхода
-        state.data = null; // Сброс данных пользователя
+        console.log('Выход пользователя успешен');
+        state.data = null;
       })
       .addCase(logout.rejected, (state, action) => {
-        console.error('Ошибка при выходе пользователя:', action.payload); // Лог ошибки выхода
+        console.error('Ошибка при выходе пользователя:', action.payload);
       });
   },
   selectors: {
@@ -213,46 +185,36 @@ const userSlice = createSlice({
   }
 });
 
-// Экспорт действий для использования в компонентах и других частях приложения
 export const { setIsAuthChecked, setUser } = userSlice.actions;
 export const { getIsAuthChecked, getUser } = userSlice.selectors;
 
-// Селектор для получения состояния пользователя
 export const selectUser = (state: RootState) => state.user;
 
-// Селектор для получения данных пользователя
 export const selectUserData = createSelector(selectUser, (user) => user.data);
 
-// Экспортируем редюсер по умолчанию для использования в хранилище Redux
 export default userSlice.reducer;
 
-// Селектор для получения имени пользователя
 export const selectUserName = (state: RootState) =>
   state.user.data ? state.user.data.name : null;
 
-// Селектор для проверки аутентификации, извлекая токен из cookie и выполняя запрос для получения данных пользователя
 export const checkUserAuth = createAsyncThunk(
   'auth/checkUserAuth',
   async (_, { dispatch }) => {
-    const token = getAccessToken(); // Получаем токен из cookie
-    console.log('checkUserAuth Токен доступа:', token);
+    const token = getAccessToken();
 
     if (token) {
       console.log(
         'checkUserAuth Токен найден. Выполняется запрос к API для получения данных пользователя...'
       );
       try {
-        const response = await getUserApi(); // Выполняем запрос к API
-        console.log('checkUserAuth Данные пользователя получены:', response);
+        const response = await getUserApi();
 
-        // Диспатчим действие для установки пользователя в состояние
         dispatch(setUser(response.user));
       } catch (error) {
         console.error(
           'checkUserAuth Не удалось получить данные пользователя:',
           error
         );
-        // Можно также диспатчить действие для обработки ошибок
       }
     } else {
       console.log(
@@ -260,7 +222,6 @@ export const checkUserAuth = createAsyncThunk(
       );
     }
 
-    dispatch(setIsAuthChecked(true)); // Устанавливаем флаг проверки аутентификации
-    console.log('checkUserAuth Проверка аутентификации завершена.');
+    dispatch(setIsAuthChecked(true));
   }
 );
