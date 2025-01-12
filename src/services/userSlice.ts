@@ -1,10 +1,4 @@
-import {
-  createSlice,
-  PayloadAction,
-  createAsyncThunk,
-  ActionCreatorWithPayload,
-  createAction
-} from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { TUser } from '@utils-types';
 import { RootState } from './store';
 import { createSelector } from '@reduxjs/toolkit';
@@ -20,141 +14,95 @@ import {
   updateUserApi,
   logoutApi,
   fetchWithRefresh
-} from '../utils/burger-api'; // Путь к API
+} from '../utils/burger-api';
 
-/** 
-type TUser = {
-  name: string;
-  email: string;
-}; */
-
-// Интерфейс состояния пользователя
 type TUserState = {
   data: TUser | null;
-  isAuthChecked: boolean; // Флаг отображает, закончилась проверка или нет
+  isAuthChecked: boolean;
 };
 
-// Начальное состояние
 export const initialState: TUserState = {
   data: null,
   isAuthChecked: false
 };
 
-// Асинхронное действие для регистрации пользователя
 export const registerUser = createAsyncThunk<TUser, TRegisterData>(
   'user/register',
   async (data, { rejectWithValue }) => {
-    // Вызов API для регистрации пользователя с переданными данными
     const response = await registerUserApi(data);
 
-    // Проверка успешности ответа от API
     if (!response?.success) {
-      // Если ответ не успешен, возвращаем ошибку с помощью rejectWithValue
       return rejectWithValue(response);
     }
 
-    // Извлечение данных пользователя и токенов из ответа
     const { user, refreshToken, accessToken } = response;
 
-    // Сохранение токенов в локальное хранилище или куки
     storeTokens(refreshToken, accessToken);
 
-    // Возвращаем объект пользователя для дальнейшего использования в редюсере
     return user;
   }
 );
 
-// Создаем thunk для получения данных пользователя
 export const fetchRefresh = createAsyncThunk<TUser>(
   'user/fetchRefres',
 
-  // Асинхронная функция, которая будет выполнена при вызове thunk
   async (_, { rejectWithValue }) => {
     try {
-      // Получаем токен доступа из cookie
       const accessToken = getCookie('accessToken');
 
-      // Создаем объект заголовков для HTTP-запроса
       const headers: HeadersInit = {
-        // Устанавливаем заголовок Content-Type для указания формата данных
         'Content-Type': 'application/json',
 
-        // Добавляем заголовок x-access-token только если токен существует
         ...(accessToken ? { 'x-access-token': accessToken } : {})
       };
 
-      // Выполняем GET-запрос к API для получения данных пользователя
       const response = await fetchWithRefresh<TUser>('/api/user', {
         method: 'GET', // Метод запроса
         headers // Заголовки запроса
       });
 
-      // Возвращаем данные пользователя, полученные из ответа
       return response;
     } catch (error) {
-      // Если произошла ошибка, возвращаем ее с помощью rejectWithValue
       return rejectWithValue(error);
     }
   }
 );
 
-// Асинхронное действие для входа пользователя
 export const loginUser = createAsyncThunk<TUser, TLoginData>(
   'user/login',
   async (data, { rejectWithValue }) => {
-    // Вызов API для входа пользователя с переданными данными
     const response = await loginUserApi(data);
-    console.log('Ответ от API:', response); // Логируем ответ от API
 
-    // Проверка успешности ответа от API
     if (!response?.success) {
-      // Если ответ не успешен, возвращаем ошибку с помощью rejectWithValue
       return rejectWithValue(response);
     }
 
-    // Извлечение данных пользователя и токенов из ответа
     const { user, refreshToken, accessToken } = response;
-    console.log('Успешный вход. Полученные данные пользователя:', user); // Логируем данные пользователя
-    // Сохранение токенов в локальное хранилище или куки
-
-    // Логируем токены
-    console.log('Полученные токены:');
-    console.log('Refresh Token:', refreshToken);
-    console.log('Access Token:', accessToken);
 
     storeTokens(refreshToken, accessToken);
 
-    // Возвращаем объект пользователя для дальнейшего использования в редюсере
     return user;
   }
 );
 
-// Асинхронное действие для получения данных о текущем пользователе
 export const fetchUser = createAsyncThunk(
   'user/fetch',
   async (_, { rejectWithValue }) => {
-    // Вызов API для получения данных о текущем пользователе
     const response = await getUserApi();
 
-    // Проверка успешности ответа от API
     if (!response?.success) {
-      // Если ответ не успешен, возвращаем ошибку с помощью rejectWithValue
       return rejectWithValue(response);
     }
 
-    // Возвращаем объект пользователя для дальнейшего использования в редюсере
     return response.user;
   }
 );
 
-// Асинхронное действие для обновления данных пользователя
 export const updateUser = createAsyncThunk<TUser, Partial<TRegisterData>>(
   'user/update',
   async (data, { rejectWithValue }) => {
-    // Вызов API для обновления данных пользователя с переданными частичными данными
     const response = await updateUserApi(data);
 
-    // Проверка успешности ответа от API
     if (!response?.success) {
       // Если ответ не успешен, возвращаем ошибку с помощью rejectWithValue
       return rejectWithValue(response);
@@ -281,43 +229,6 @@ export default userSlice.reducer;
 // Селектор для получения имени пользователя
 export const selectUserName = (state: RootState) =>
   state.user.data ? state.user.data.name : null;
-
-// Селектор для проверки аутентификации, извлекая токен из хранилища и выполняя запрос для получения данных пользователя
-/**
-export const checkUserAuth = createAsyncThunk(
-  'auth/checkUserAuth',
-  async (_, { dispatch }) => {
-    const token = localStorage.getItem('accessToken');
-    console.log('checkUserAuth Токен доступа:', token);
-
-    if (token) {
-      console.log(
-        'checkUserAuth Токен найден. Выполняется запрос к API для получения данных пользователя...'
-      );
-      try {
-        const response = await getUserApi();
-        console.log('checkUserAuth Данные пользователя получены:', response);
-
-        // Диспатчим действие для установки пользователя в состояние
-        dispatch(setUser(response.user));
-      } catch (error) {
-        console.error(
-          'checkUserAuth Не удалось получить данные пользователя:',
-          error
-        );
-        // Можно также диспатчить действие для обработки ошибок
-      }
-    } else {
-      console.log(
-        'checkUserAuth Токен не найден. Пользователь не аутентифицирован.'
-      );
-    }
-
-    dispatch(setIsAuthChecked(true));
-    console.log('checkUserAuth Проверка аутентификации завершена.');
-  }
-);
-*/
 
 // Селектор для проверки аутентификации, извлекая токен из cookie и выполняя запрос для получения данных пользователя
 export const checkUserAuth = createAsyncThunk(
