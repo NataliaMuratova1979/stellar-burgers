@@ -10,7 +10,6 @@ import { TConstructorIngredient } from '../src/utils/types';
 
 import { describe, it, expect } from '@jest/globals';
 
-// Вынесем общие ингредиенты в константы
 const ingredient1: TConstructorIngredient = {
   _id: '1',
   id: '1',

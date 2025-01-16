@@ -1,6 +1,11 @@
+const modalSelector = '[data-cy="modal"]'; // Замена на константу
+const closeButtonSelector = '[data-cy="close-button"]'; // Замена на константу
+const overlaySelector = '[data-cy="overlay"]'; // Замена на константу
+const orderButtonSelector = '[data-cy="order-button"]'; // Замена на константу
+const orderNumberSelector = '[data-cy="order-number"]'; // Замена на константу
+
 describe('Тестирование конструктора', () => {
   beforeEach(() => {
-    // Перехватываем запрос к API
     cy.intercept('GET', '/api/ingredients', { fixture: 'ingredients.json' }).as(
       'getIngredients'
     );
@@ -9,19 +14,15 @@ describe('Тестирование конструктора', () => {
       'getUser'
     );
 
-    // Устанавливаем фальшивые токены перед каждым тестом
     cy.window().then((win) => {
       win.localStorage.setItem('refreshToken', 'fakeRefreshToken'); // Устанавливаем фейковый refreshToken
     });
     cy.setCookie('accessToken', 'fakeAccessToken');
 
-    // Посещаем главную страницу
     cy.visit('/');
 
-    // Ждем завершения запроса
     cy.wait('@getIngredients');
   });
-  //КОД НИЖЕ РАБОТАЕТ, НЕ ТРОГАТЬ Добавление ингредиента из списка в конструктор
 
   describe('Протестировано добавление ингредиента из списка в конструктор', () => {
     // Универсальная функция для тестирования добавления ингредиента
@@ -47,29 +48,22 @@ describe('Тестирование конструктора', () => {
       });
     }
 
-    // Вызываем функцию для булки
     testIngredient('Выберите булки', 'Краторная булка N-200i');
 
-    // Вызываем функцию для начинки
     testIngredient('Выберите начинку', 'Биокотлета из марсианской Магнолии');
 
-    // Вы можете добавлять дополнительные ингредиенты аналогичным образом
     testIngredient('Выберите начинку', 'Соус Spicy-X');
   });
 
-  //КОД НИЖЕ РАБОТАЕТ, НЕ ТРОГАТЬ Тестирование модального окна ингредиента
   describe('Тестирование модального окна ингредиента', () => {
     beforeEach(() => {
-      // Находим первый ингредиент и присваиваем алиас
       cy.get('li').first().as('firstIngredient');
     });
 
     const openModal = () => {
-      // Кликаем по первому ингредиенту, чтобы открыть модальное окно
       cy.get('@firstIngredient').click();
 
-      // Проверяем, что модальное окно открыто
-      cy.get('[data-cy="modal"]')
+      cy.get(modalSelector)
         .should('be.visible')
         .then(() => {
           cy.log('Модальное окно успешно открыто');
@@ -77,11 +71,9 @@ describe('Тестирование конструктора', () => {
     };
 
     const closeModalByCloseButton = () => {
-      // Кликаем по кнопке закрытия
-      cy.get('[data-cy="close-button"]').click();
+      cy.get(closeButtonSelector).click();
 
-      // Проверяем, что модальное окно закрыто
-      cy.get('[data-cy="modal"]')
+      cy.get(modalSelector)
         .should('not.exist')
         .then(() => {
           cy.log('Модальное окно успешно закрыто');
@@ -89,11 +81,9 @@ describe('Тестирование конструктора', () => {
     };
 
     const closeModalByOverlay = () => {
-      // Кликаем по оверлею с использованием force
-      cy.get('[data-cy="overlay"]').click({ force: true });
+      cy.get(overlaySelector).click({ force: true });
 
-      // Проверяем, что модальное окно закрыто
-      cy.get('[data-cy="modal"]')
+      cy.get(modalSelector)
         .should('not.exist')
         .then(() => {
           cy.log('Модальное окно успешно закрыто');
@@ -114,7 +104,6 @@ describe('Тестирование конструктора', () => {
       closeModalByOverlay();
     });
   });
-  //Тестирование создания заказа
   describe('Тестирование создания заказа', () => {
     it('Оформление заказа', () => {
       cy.intercept('POST', '/api/orders', { fixture: 'order.json' }).as(
@@ -128,26 +117,23 @@ describe('Тестирование конструктора', () => {
         cy.get('h3').contains(category).next('ul').contains('Добавить').click();
       });
 
-      cy.get('[data-cy="order-button"]').click();
+      cy.get(orderButtonSelector).click();
 
       cy.wait('@postOrder').then((interception) => {
         const mockOrderData = interception.response.body; // Получаем данные из ответа
 
-        // Проверяем номер заказа
-        cy.get('[data-cy="order-number"]').should(
+        cy.get(orderNumberSelector).should(
           'contain',
           mockOrderData.order.number
         );
       });
 
-      // Проверяем, что модальное окно открылось и номер заказа верный
-      cy.get('[data-cy="modal"]').should('be.visible');
+      cy.get(modalSelector).should('be.visible');
 
-      // Клик по кнопке закрытия модального окна
-      cy.get('[data-cy="close-button"]').click();
+      cy.get(closeButtonSelector).click();
 
       // Проверяем, что модальное окно закрыто
-      cy.get('[data-cy="modal"]').should('not.exist');
+      cy.get(modalSelector).should('not.exist');
 
       ['Выберите булки', 'Выберите начинку'].forEach((text) => {
         cy.contains(text).should('exist');
