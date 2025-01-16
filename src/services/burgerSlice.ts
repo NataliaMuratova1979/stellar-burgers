@@ -5,25 +5,24 @@ import {
   createAsyncThunk
 } from '@reduxjs/toolkit';
 import { TConstructorIngredient, TOrder } from '@utils-types'; // Импортируем ваши типы
-import { RootState } from './store'; // Импортируйте тип корневого состояния вашего Redux Store
-import { orderBurgerApi } from '../utils/burger-api'; // Путь к файлу API
+import { RootState } from './store';
+import { orderBurgerApi } from '../utils/burger-api';
 
-// Определяем интерфейсы для состояния - в конструкторе должна быть булка и ингредиенты
 interface ConstructorItems {
-  bun: TConstructorIngredient | null; // Используем TConstructorIngredient для булки
-  ingredients: TConstructorIngredient[]; // Массив ингредиентов
+  bun: TConstructorIngredient | null;
+  ingredients: TConstructorIngredient[];
 }
 
 // Определяем интерфейс - информация о конструкторе, статусе запроса на заказ и данные о заказе
 interface BurgerState {
   constructorItems: ConstructorItems;
-  orderRequest: boolean; // Запрос на оформление заказа
-  orderModalData: TOrder | null; // Данные о заказе
-  orderError: string | null; // Для хранения ошибки
+  orderRequest: boolean;
+  orderModalData: TOrder | null;
+  orderError: string | null;
 }
 
 // Начальное состояние
-const initialState: BurgerState = {
+export const initialState: BurgerState = {
   constructorItems: {
     bun: null,
     ingredients: []
@@ -53,37 +52,26 @@ const burgerSlice = createSlice({
   reducers: {
     setBun(state, action: PayloadAction<TConstructorIngredient>) {
       state.constructorItems.bun = action.payload; // Устанавливаем булку
-      console.log('Булка установлена:', action.payload);
     },
     addIngredient(state, action: PayloadAction<TConstructorIngredient>) {
       state.constructorItems.ingredients.push(action.payload); // Добавляем ингредиент
-      console.log('Ингредиент добавлен:', action.payload);
-      console.log('Текущие ингредиенты:', state.constructorItems.ingredients);
     },
     removeIngredient(state, action: PayloadAction<string>) {
       const ingredientId = action.payload;
       state.constructorItems.ingredients =
         state.constructorItems.ingredients.filter(
-          (ingredient: TConstructorIngredient) => ingredient.id !== ingredientId // Удаляем ингредиент по id
+          (ingredient: TConstructorIngredient) => ingredient.id !== ingredientId
         );
-      console.log('Ингредиент удален:', ingredientId);
-      console.log(
-        'Оставшиеся ингредиенты:',
-        state.constructorItems.ingredients
-      );
     },
     setOrderRequest(state, action: PayloadAction<boolean>) {
-      state.orderRequest = action.payload; // Устанавливаем статус запроса на оформление заказа
-      console.log('Статус запроса на оформление заказа:', action.payload);
+      state.orderRequest = action.payload;
     },
     setOrderModalData(state, action: PayloadAction<TOrder | null>) {
-      state.orderModalData = action.payload; // Устанавливаем данные о заказе
-      console.log('Данные о заказе установлены:', action.payload);
+      state.orderModalData = action.payload;
     },
     clearConstructor(state) {
-      state.constructorItems.bun = null; // Очищаем булку
-      state.constructorItems.ingredients = []; // Очищаем ингредиенты
-      console.log('Конструктор очищен');
+      state.constructorItems.bun = null;
+      state.constructorItems.ingredients = [];
     },
     moveIngredientUp(state, action: PayloadAction<string>) {
       const ingredientId = action.payload;
@@ -94,13 +82,12 @@ const burgerSlice = createSlice({
         const [movedIngredient] = state.constructorItems.ingredients.splice(
           index,
           1
-        ); // Удаляем ингредиент из его текущей позиции
+        );
         state.constructorItems.ingredients.splice(
           index - 1,
           0,
           movedIngredient
-        ); // Вставляем его на одну позицию вверх
-        console.log('Ингредиент перемещен вверх:', movedIngredient);
+        );
       }
     },
     moveIngredientDown(state, action: PayloadAction<string>) {
@@ -112,13 +99,12 @@ const burgerSlice = createSlice({
         const [movedIngredient] = state.constructorItems.ingredients.splice(
           index,
           1
-        ); // Удаляем ингредиент из его текущей позиции
+        );
         state.constructorItems.ingredients.splice(
           index + 1,
           0,
           movedIngredient
-        ); // Вставляем его на одну позицию вниз
-        console.log('Ингредиент перемещен вниз:', movedIngredient);
+        );
       }
     }
   },
@@ -131,7 +117,6 @@ const burgerSlice = createSlice({
       .addCase(placeOrder.fulfilled, (state, action) => {
         state.orderRequest = false; // Запрос завершен
         state.orderModalData = action.payload; // Устанавливаем данные о заказе
-        console.log('Заказ успешно оформлен:', action.payload);
       })
       .addCase(placeOrder.rejected, (state, action) => {
         state.orderRequest = false; // Запрос завершен

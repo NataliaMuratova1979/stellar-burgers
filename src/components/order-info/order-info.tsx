@@ -2,9 +2,8 @@ import { FC, useEffect, useMemo } from 'react';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
-
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState, AppDispatch } from '../../services/store'; // Убедитесь, что AppDispatch экспортируется из вашего store
+import { RootState, AppDispatch } from '../../services/store';
 import { useParams } from 'react-router-dom';
 import {
   selectOrderNumberData,
@@ -13,28 +12,18 @@ import {
 
 export const OrderInfo: FC = () => {
   const { number } = useParams<{ number: string }>();
-  const dispatch = useDispatch<AppDispatch>(); // Используем типизированный dispatch
-
-  // Приводим номер заказа к числу
+  const dispatch = useDispatch<AppDispatch>();
   const orderNumber = Number(number);
-  console.log('Order number from URL:', orderNumber);
-
-  // Используем селектор для получения данных о заказе
   const orderData = useSelector((state: RootState) =>
     selectOrderNumberData(state, orderNumber)
   );
-  console.log('Fetched order data:', orderData);
-
-  // Получаем список ингредиентов из состояния
   const ingredients = useSelector(
     (state: RootState) => state.ingredients.ingredients
   );
-  console.log('Ingredients from state:', ingredients);
 
-  // Эффект для загрузки данных о заказе при первом рендере
   useEffect(() => {
     if (!orderData) {
-      dispatch(fetchOrderByNumber(orderNumber)); // Теперь TypeScript должен понимать, что это thunk action
+      dispatch(fetchOrderByNumber(orderNumber));
     }
   }, [dispatch, orderData, orderNumber]);
 
@@ -82,8 +71,6 @@ export const OrderInfo: FC = () => {
   if (!orderInfo) {
     return <Preloader />;
   }
-
-  console.log('Rendering OrderInfoUI with order info:', orderInfo);
 
   return <OrderInfoUI orderInfo={orderInfo} />;
 };

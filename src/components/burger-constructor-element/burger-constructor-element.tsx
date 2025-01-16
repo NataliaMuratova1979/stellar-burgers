@@ -13,19 +13,15 @@ export const BurgerConstructorElement: FC<BurgerConstructorElementProps> = memo(
     const dispatch = useDispatch();
 
     const handleMoveDown = () => {
-      console.log('Попытка переместить ингредиент вниз: ${ingredient.id}');
       dispatch(moveIngredientDown(ingredient.id));
     };
 
     const handleMoveUp = () => {
-      console.log('Попытка переместить ингредиент вверх: ${ingredient.id}');
       dispatch(moveIngredientUp(ingredient.id));
     };
 
     const handleClose = () => {
-      //  Логика для удаления ингредиента из конструктора
       dispatch(removeIngredient(ingredient.id));
-      console.log('Удаление ингредиента: ${ingredient.id}');
     };
 
     return (

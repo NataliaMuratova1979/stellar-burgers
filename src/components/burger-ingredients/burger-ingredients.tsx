@@ -8,8 +8,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { RootState, AppDispatch } from '../../services/store';
 
-/**Этот компонент отвечает за отображение списка ингредиентов для бургера, а также за управление состоянием вкладок (табов) для различных типов ингредиентов. */
-
 export const BurgerIngredients: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { ingredients } = useSelector((state: RootState) => state.ingredients);
@@ -30,6 +28,11 @@ export const BurgerIngredients: FC = () => {
   const [saucesRef, inViewSauces] = useInView({
     threshold: 0
   });
+
+  // Выводим ингредиенты в консоль при их изменении
+  useEffect(() => {
+    console.log('Полученные ингредиенты:', ingredients);
+  }, [ingredients]);
 
   useEffect(() => {
     if (inViewBuns) {

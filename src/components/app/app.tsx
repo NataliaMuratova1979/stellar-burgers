@@ -42,23 +42,17 @@ const App: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Определяем фоновое местоположение для модалей
-  //const backgroundLocation = location.state?.backgroundLocation;
   const state = location.state as { background?: Location };
 
-  // Получаем состояние ингредиентов из Redux
   const { ingredients, loading, error } = useSelector(
     (state: RootState) => state.ingredients
   );
 
-  // Эффект для загрузки ингредиентов при монтировании компонента
   useEffect(() => {
     console.log('Fetching ingredients and checking user authentication');
 
-    // Диспетчеризация загрузки ингредиентов
     dispatch(fetchIngredients());
 
-    // Диспетчеризация проверки аутентификации
     dispatch(checkUserAuth());
   }, [dispatch]);
 
