@@ -9,7 +9,7 @@ interface userOrdersState {
   fetchError: string | null; // Изменено на fetchError
 }
 
-const initialState: userOrdersState = {
+export const initialState: userOrdersState = {
   orders: [],
   isLoading: false, // Изменено на isLoading
   fetchError: null // Изменено на fetchError

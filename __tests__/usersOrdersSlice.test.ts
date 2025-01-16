@@ -4,18 +4,12 @@ import userOrdersReducer, {
   clearError,
   selectUsersOrders,
   selectUsersLoading,
-  selectUsersError
+  selectUsersError,
+  initialState
 } from '../src/services/usersOrdersSlice';
 import { TOrder } from '../src/utils/types'; // Импортируйте TOrder
 
 import { describe, it, expect } from '@jest/globals';
-
-// Определяем начальное состояние
-const initialState = {
-  orders: [],
-  isLoading: false,
-  fetchError: null
-};
 
 describe('Тестируем userOrdersSlice', () => {
   it('должен иметь начальное состояние', () => {

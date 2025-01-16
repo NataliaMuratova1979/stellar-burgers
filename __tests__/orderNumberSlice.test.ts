@@ -1,5 +1,8 @@
 // tests/orderNumberSlice.test.ts
-import reducer, { fetchOrderByNumber } from '../src/services/orderNumberSlice';
+import reducer, {
+  fetchOrderByNumber,
+  initialState
+} from '../src/services/orderNumberSlice';
 import { TOrder } from '../src/utils/types';
 import { getOrderByNumberApi } from '../src/utils/burger-api';
 
@@ -11,11 +14,6 @@ jest.mock('../src/utils/burger-api', () => ({
 }));
 
 describe('Тестирование orderNumberSlice', () => {
-  const initialState = {
-    orderNumberData: null,
-    loading: false,
-    error: null
-  };
 
   beforeEach(() => {
     // Сброс состояния перед каждым тестом

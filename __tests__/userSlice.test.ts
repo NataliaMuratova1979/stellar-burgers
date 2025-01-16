@@ -24,11 +24,6 @@ describe('Тестирование userSlice', () => {
   });
 
   it('Проверка авторизации пользователя', () => {
-    const initialState = {
-      data: null,
-      isAuthChecked: false
-    };
-
     const action = setIsAuthChecked(true);
     const nextState = userReducer(initialState, action);
 

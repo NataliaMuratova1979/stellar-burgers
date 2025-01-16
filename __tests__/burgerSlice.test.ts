@@ -3,74 +3,54 @@ import burgerReducer, {
   removeIngredient,
   moveIngredientUp,
   moveIngredientDown,
-  clearConstructor
+  clearConstructor,
+  initialState
 } from '../src/services/burgerSlice'; 
 import { TConstructorIngredient } from '../src/utils/types';
 
 import { describe, it, expect } from '@jest/globals';
 
+// Вынесем общие ингредиенты в константы
+const ingredient1: TConstructorIngredient = {
+  _id: '1',
+  id: '1',
+  name: 'Помидор',
+  type: 'ingredient',
+  proteins: 1,
+  fat: 0,
+  carbohydrates: 4,
+  calories: 20,
+  price: 10,
+  image: '',
+  image_large: '',
+  image_mobile: ''
+};
+
+const ingredient2: TConstructorIngredient = {
+  _id: '2',
+  id: '2',
+  name: 'Лук',
+  type: 'ingredient',
+  proteins: 1,
+  fat: 0,
+  carbohydrates: 4,
+  calories: 20,
+  price: 10,
+  image: '',
+  image_large: '',
+  image_mobile: ''
+};
+
 describe('Тестирование burgerSlice reducer', () => {
-  const initialState = {
-    constructorItems: {
-      bun: null,
-      ingredients: []
-    },
-    orderRequest: false,
-    orderModalData: null,
-    orderError: null
-  };
 
   it('должен добавлять ингредиент', () => {
-    const ingredient: TConstructorIngredient = {
-      _id: '1',
-      id: '1',
-      name: 'Помидор',
-      type: 'ingredient',
-      proteins: 1,
-      fat: 0,
-      carbohydrates: 4,
-      calories: 20,
-      price: 10,
-      image: '',
-      image_large: '',
-      image_mobile: ''
-    };
-
     // Объявляем и инициализируем newState
-    const newState = burgerReducer(initialState, addIngredient(ingredient));
+    const newState = burgerReducer(initialState, addIngredient(ingredient1));
 
-    expect(newState.constructorItems.ingredients).toContain(ingredient);
+    expect(newState.constructorItems.ingredients).toContain(ingredient1);
   });
 
   it('должен удалять ингредиент', () => {
-    const ingredient1: TConstructorIngredient = {
-      _id: '1', // Обязательно добавьте _id
-      id: '1',
-      name: 'Помидор',
-      type: 'ingredient',
-      proteins: 1,
-      fat: 0,
-      carbohydrates: 4,
-      calories: 20,
-      price: 10,
-      image: '',
-      image_large: '',
-      image_mobile: ''
-    };
-    const ingredient2: TConstructorIngredient = {
-      _id: '2', // Обязательно добавьте _id
-      id: '2',
-      name: 'Лук',
-      type: 'ingredient',
-      proteins: 1,
-      fat: 0,
-      carbohydrates: 4,
-      calories: 20,
-      price: 10,
-      image: '',
-      image_large: '',
-      image_mobile: ''
-    };
 
     // Добавляем ингредиенты в начальное состояние
     let newState = burgerReducer(initialState, addIngredient(ingredient1));
@@ -84,35 +64,6 @@ describe('Тестирование burgerSlice reducer', () => {
   });
 
   it('должен менять порядок ингредиентов вверх', () => {
-    const ingredient1: TConstructorIngredient = {
-      _id: '1', // Обязательно добавьте _id
-      id: '1',
-      name: 'Помидор',
-      type: 'ingredient',
-      proteins: 1,
-      fat: 0,
-      carbohydrates: 4,
-      calories: 20,
-      price: 10,
-      image: '',
-      image_large: '',
-      image_mobile: ''
-    };
-    const ingredient2: TConstructorIngredient = {
-      _id: '2', // Обязательно добавьте _id
-      id: '2',
-      name: 'Лук',
-      type: 'ingredient',
-      proteins: 1,
-      fat: 0,
-      carbohydrates: 4,
-      calories: 20,
-      price: 10,
-      image: '',
-      image_large: '',
-      image_mobile: ''
-    };
-
     // Добавляем ингредиенты в начальное состояние
     let newState = burgerReducer(initialState, addIngredient(ingredient1));
     newState = burgerReducer(newState, addIngredient(ingredient2));
@@ -125,35 +76,6 @@ describe('Тестирование burgerSlice reducer', () => {
   });
 
   it('должен менять порядок ингредиентов вниз', () => {
-    const ingredient1: TConstructorIngredient = {
-      _id: '1', // Обязательно добавьте _id
-      id: '1',
-      name: 'Помидор',
-      type: 'ingredient',
-      proteins: 1,
-      fat: 0,
-      carbohydrates: 4,
-      calories: 20,
-      price: 10,
-      image: '',
-      image_large: '',
-      image_mobile: ''
-    };
-    const ingredient2: TConstructorIngredient = {
-      _id: '2', // Обязательно добавьте _id
-      id: '2',
-      name: 'Лук',
-      type: 'ingredient',
-      proteins: 1,
-      fat: 0,
-      carbohydrates: 4,
-      calories: 20,
-      price: 10,
-      image: '',
-      image_large: '',
-      image_mobile: ''
-    };
-
     // Добавляем ингредиенты в начальное состояние
     let newState = burgerReducer(initialState, addIngredient(ingredient1));
     newState = burgerReducer(newState, addIngredient(ingredient2));
@@ -166,21 +88,6 @@ describe('Тестирование burgerSlice reducer', () => {
   });
 
   it('должен очищать конструктор', () => {
-    const ingredient1: TConstructorIngredient = {
-      _id: '1', // Обязательно добавьте _id
-      id: '1',
-      name: 'Помидор',
-      type: 'ingredient',
-      proteins: 1,
-      fat: 0,
-      carbohydrates: 4,
-      calories: 20,
-      price: 10,
-      image: '',
-      image_large: '',
-      image_mobile: ''
-    };
-
     // Добавляем ингредиент в начальное состояние
     let newState = burgerReducer(initialState, addIngredient(ingredient1));
 
